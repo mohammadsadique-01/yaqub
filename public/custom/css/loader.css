@@ -1,0 +1,217 @@
+/* Loader container */
+.loader-container {
+  display: none; /* Initially hide the loader */
+  vertical-align: middle; /* Align the loader vertically */
+}
+
+/* Loader animation */
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.3);
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite; /* Animation */
+  margin: 0 0 -2px 0 !important;
+  display: inline-block; /* Ensure the loader is inline with the text */
+}
+
+/* Animation keyframes */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Show loader when needed */
+button.loading .loader-container {
+  display: inline-block;
+}
+
+/* Hide text when loader is displayed */
+button.loading .text {
+  display: none;
+}
+
+
+
+.duplicate {
+  border: 1px solid red; /* Add red border for duplicate inputs */
+}
+
+
+.overlay-wrapper {
+  position: relative;
+}
+
+.overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+}
+
+.overlay-content {
+  text-align: center;
+  padding: 20px;
+}
+
+/* Additional styles for the loading spinner */
+.overlay i {
+  color: #333; /* Adjust the color as needed */
+}
+
+
+
+.previewImg{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+/* Apply CSS to select2 container when is-invalid class is present on the select tag */
+.select2.is-invalid + .select2-container--default .select2-selection--single {
+  border-color: #dc3545 !important;
+  padding-right: 2.25rem !important;
+  background-image: url('data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' fill=\'none\' stroke=\'%23dc3545\' viewBox=\'0 0 12 12\'%3e%3ccircle cx=\'6\' cy=\'6\' r=\'4.5\'/%3e%3cpath stroke-linejoin=\'round\' d=\'M5.8 3.6h.4L6 6.5z\'/%3e%3ccircle cx=\'6\' cy=\'8.2\' r=\'.6\' fill=\'%23dc3545\' stroke=\'none\'/%3e%3c/svg%3e');
+  background-repeat: no-repeat;
+  background-position: right 22px center; /* Adjust the position as needed */
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+.widget-user-2 .widget-user-header {
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  padding: 0.5rem;
+}
+
+.fixed-size-box {
+  width: 100%; /* Set your desired width */
+  height: 200px; /* Set your desired height */
+  overflow: hidden;
+  border: 1px solid #ddd; /* Optional: Add border for better visibility */
+}
+
+.fixed-size-box img {
+  width: 100%; /* Make sure the image takes 100% width of the container */
+  height: auto; /* Ensure the aspect ratio is maintained */
+  display: block; /* Remove any extra spacing or unwanted behaviors */
+}
+
+.whatsapp, .mail {
+  transition: transform 0.3s, cursor 0.3s; /* Add smooth transition for scale and cursor */
+}
+
+.whatsapp:hover, .mail:hover {
+  transform: scale(1.2); /* Scale the icon on hover */
+  cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+
+.img-dashboard {
+  width: 95px !important;
+  height: 95px !important;
+}
+
+
+.breadcrumb > li {
+  color: black;
+}
+
+
+
+/* Add styles for the highlighted instruction */
+#instructions-list {
+  list-style: none;
+  padding: 0;
+}
+
+#instructions-list > li {
+  padding: 5px;
+}
+.highlighted {
+  background-color: #f5f5f5;
+  border-left: 5px solid transparent; /* Adjust the color as needed */
+  padding: 20px;
+  position: relative;
+  margin-bottom: -15px; /* Adjust the overlap */
+  z-index: 1;
+  transition: all 0.3s ease; /* Add transition for smooth effect */
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+
+}
+
+.highlighted:hover {
+  transform: translateY(-5px); /* Add hover effect */
+  border-left-color: #007bff; /* Adjust the color as needed */
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+
+/* Add styles for the text below */
+.text-below {
+  position: relative;
+  z-index: 0;
+  font-size: 18px;
+}
+
+
+
+
+/* Custom Colors */
+.bg-magenta {
+  background-color: magenta;
+}
+
+.bg-turquoise {
+  background-color: turquoise;
+}
+
+.bg-lavender {
+  background-color: lavender;
+}
+
+.bg-crimson {
+  background-color: crimson;
+}
+
+.bg-gold {
+  background-color: gold;
+}
+
+.bg-slate {
+  background-color: slate;
+}
+
+.bg-coral {
+  background-color: coral;
+}
+
+.bg-indigo {
+  background-color: indigo;
+}
+
+.bg-salmon {
+  background-color: salmon;
+}
+
+.bg-silver {
+  background-color: silver;
+}
+
+.bg-orchid {
+  background-color: orchid;
+}
+
+.bg-cyan {
+  background-color: cyan;
+}
+

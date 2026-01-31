@@ -1,0 +1,60 @@
+.list-group-item.text-dark:hover {
+    background-color: #e9eaeb;
+}
+.list-group-item.text-light:hover {
+    background-color: #3f474e;
+}
+.list-group-item {
+    border: 0 !important;
+}
+
+.sidebar-search-results > .list-group {
+    box-shadow: 0 29px 52px rgb(31 13 13 / 98%), 0 25px 16px rgb(0 0 0 / 52%);
+}
+
+    /* Style for the scrollable div */
+    .scrollable-div {
+        overflow-y: auto; /* Enable vertical scrolling */
+    }
+
+    /* Custom scrollbar design */
+    .scrollable-div::-webkit-scrollbar {
+        width: 10px; /* Width of the scrollbar */
+    }
+
+    /* Track */
+    .scrollable-div::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Color of the scrollbar track */
+    }
+
+    /* Thumb */
+    .scrollable-div::-webkit-scrollbar-thumb {
+        background: #888; /* Color of the scrollbar thumb */
+        border-radius: 5px; /* Rounded corners */
+    }
+
+    /* Handle on hover */
+    .scrollable-div::-webkit-scrollbar-thumb:hover {
+        background: #555; /* Color of the scrollbar thumb on hover */
+    }
+
+
+
+     /* Custom styles for the search box */
+     .dataTables_filter {
+        text-align: right;
+    }
+    .dataTables_filter label {
+        margin-right: 10px;
+        color: #333;
+    }
+    .dataTables_filter input[type="search"] {
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .dataTables_filter input[type="search"]:focus {
+        outline: none;
+        border-color: #007bff;
+    }
