@@ -78,6 +78,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/data', [DrillingController::class, 'getData'])->name('data');
         Route::delete('/{drillingReport}', [DrillingController::class, 'destroy'])->name('destroy');
         Route::get('/{drillingReport}', [DrillingController::class, 'show'])->name('show');
+        Route::get('/{drilling}/edit', [DrillingController::class, 'edit'])->name('edit');
+        Route::put('/{drilling}', [DrillingController::class, 'update'])->name('update');
+        Route::get('/filter/sites-by-debitors', [DrillingController::class, 'getSitesByDebitors'])->name('filterSiteBydebitor');
 
     });
 

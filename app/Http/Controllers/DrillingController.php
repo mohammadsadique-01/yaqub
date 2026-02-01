@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Debitor;
-use App\Models\DrillingReport;
 use App\Models\Operator;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Models\DebitorSite;
+use Illuminate\Http\Request;
+use App\Models\DrillingReport;
+use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\Facades\DataTables;
 
 class DrillingController extends Controller
@@ -58,41 +59,47 @@ class DrillingController extends Controller
     public function getData(Request $request)
     {
         $query = DrillingReport::with(['debitor', 'site', 'operator'])
-            ->where('financial_year_id', session('financial_year_id'))
-            ->latest('id');
+            ->where('financial_year_id', session('financial_year_id'));
 
-        return DataTables::of($query)
+        // Clean arrays
+        $debitors  = $this->cleanArray($request->debitors ?? []);
+        $sites     = $this->cleanArray($request->sites ?? []);
+        $operators = $this->cleanArray($request->operators ?? []);
+        
+        if (!empty($debitors)) {
+            $query->whereIn('debitor_id', $debitors);
+        }
+
+        if (!empty($sites)) {
+            $query->whereIn('debitor_site_id', $sites);
+        }
+
+        if (!empty($operators)) {
+            $query->whereIn('operator_id', $operators);
+        }
+
+        if ($request->filled('from_date') || $request->filled('to_date')) {
+            $query->whereBetween('date', [
+                $request->from_date ?? '1900-01-01',
+                $request->to_date ?? now()->toDateString(),
+            ]);
+        }
+
+        return DataTables::of($query->latest())
             ->addIndexColumn()
-            ->addColumn('debitor', fn ($row) => $row->debitor->account_name ?? '-'
-            )
-            ->addColumn('site', fn ($row) => $row->site->site_name ?? '-'
-            )
-            ->addColumn('operator', fn ($row) => $row->operator->name ?? '-'
-            )
-            ->addColumn('operator', fn ($row) => $row->operator->name ?? '-'
-            )
+            ->addColumn('debitor', fn($r) => $r->debitor->account_name ?? '-')
+            ->addColumn('site', fn($r) => $r->site->site_name ?? '-')
+            ->addColumn('operator', fn($r) => $r->operator->name ?? '-')
             ->addColumn('action', function ($row) {
-                $viewUrl = route('drilling.show', $row->id);
-
-                return '
-                    <button type="button" class="btn btn-info btn-xs viewDrilling" data-url="'.$viewUrl.'">
-                        <i class="fas fa-eye"></i>
-                    </button>
-
-                    <button 
-                        type="button"
-                        class="btn btn-primary btn-xs editDebitor"
-                        data-id="'.$row->id.'">
-                        <i class="fas fa-pen"></i>
-                    </button>
-
-                    <button class="btn btn-danger btn-xs deleteDrilling" data-id="'.$row->id.'">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                ';
+                return view('backend.drilling.action', compact('row'))->render();
             })
             ->rawColumns(['action'])
             ->make(true);
+    }
+
+    public function cleanArray($arr)
+    {
+        return array_values(array_filter($arr, fn ($v) => !is_null($v) && $v !== ''));
     }
 
     public function destroy(DrillingReport $drillingReport): JsonResponse
@@ -110,4 +117,36 @@ class DrillingController extends Controller
 
         return view('backend.drilling.view', compact('drillingReport'));
     }
+
+    public function edit(DrillingReport $drilling): JsonResponse
+    {
+        return response()->json($drilling->load(['debitor','site','operator']));
+    }
+
+    public function update(Request $request, DrillingReport $drilling): JsonResponse
+    {
+        $request->validate([
+            'start_time' => 'required|numeric',
+            'end_time'   => 'required|numeric|gt:start_time',
+        ]);
+
+        $drilling->update($request->except(['financial_year_id ','debitor_id','debitor_site_id','operator_id']));
+
+        return response()->json([
+            'message' => 'Drilling report updated successfully'
+        ]);
+    }
+
+    public function getSitesByDebitors(Request $request): JsonResponse
+    {
+        $debitorIds = $request->debitor_ids;
+
+        $sites = DebitorSite::whereIn('debitor_id', $debitorIds)
+            ->select('id', 'site_name')
+            ->distinct()
+            ->get();
+
+        return response()->json($sites);
+    }
+
 }

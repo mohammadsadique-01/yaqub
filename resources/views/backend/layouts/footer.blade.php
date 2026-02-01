@@ -76,8 +76,6 @@
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
 <!-- DataTables JS -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -95,7 +93,7 @@
     });
 
     $('[data-toggle="tooltip"]').tooltip();
-
+    
     //Initialize Select2 Elements
     $('.select2').select2();
     $('.select2bs4').select2({ theme: 'bootstrap4' });

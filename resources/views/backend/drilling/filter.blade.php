@@ -12,8 +12,7 @@
             {{-- Debitor --}}
             <div class="col-md-3">
                 <label class="small text-muted">Debitor</label>
-                <select class="form-control select2 debitorSelect" multiple="multiple" data-placeholder="Select Debitor" style="width: 100%;">
-                    <option value="">All Debitors</option>
+                <select id="filterDebitor" class="form-control select2" multiple="multiple" data-placeholder="Select Debitor" style="width: 100%;">
                     @foreach($debitors as $debitor)
                         <option value="{{ $debitor->id }}">{{ $debitor->account_name }}</option>
                     @endforeach
@@ -23,7 +22,7 @@
             {{-- Site --}}
             <div class="col-md-3">
                 <label class="small text-muted">Site</label>
-                <select class="form-control select2 siteSelect" multiple="multiple" data-placeholder="Select Sites">
+                <select id="filterSite" class="form-control select2" multiple="multiple" data-placeholder="Select Sites">
                     <option value="">All Sites</option>
                 </select>
             </div>
@@ -32,7 +31,6 @@
             <div class="col-md-2">
                 <label class="small text-muted">Operator</label>
                 <select id="filterOperator" class="form-control select2" multiple="multiple" data-placeholder="Select Operator">
-                    <option value="">All Operators</option>
                     @foreach($operators as $operator)
                         <option value="{{ $operator->id }}">{{ $operator->name }}</option>
                     @endforeach
