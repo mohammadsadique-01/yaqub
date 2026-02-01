@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Debitor;
-use App\Models\Village;
-use App\Models\Location;
-use Illuminate\View\View;
-use App\Models\DebitorSite;
-use Illuminate\Http\Request;
-use App\Models\DrillingReport;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreDebitorRequest;
+use App\Models\Debitor;
+use App\Models\DebitorSite;
+use App\Models\DrillingReport;
+use App\Models\Location;
+use App\Models\Village;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
+use Yajra\DataTables\Facades\DataTables;
 
 class DebitorController extends Controller
 {

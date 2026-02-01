@@ -17,5 +17,4 @@ class Operator extends Model
     {
         return $this->hasMany(DrillingReport::class);
     }
-
 }

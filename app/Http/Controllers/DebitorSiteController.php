@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\DebitorSite;
-use Illuminate\Http\Request;
 
 class DebitorSiteController extends Controller
 {
@@ -15,7 +14,7 @@ class DebitorSiteController extends Controller
         // Check if used in drilling reports
         if ($debitorSite->drillingReports()->exists()) {
             return response()->json([
-                'message' => 'This site is already used in drilling reports'
+                'message' => 'This site is already used in drilling reports',
             ], 422);
         }
 
@@ -23,7 +22,7 @@ class DebitorSiteController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'This site is deleted.'
+            'message' => 'This site is deleted.',
         ]);
     }
 }

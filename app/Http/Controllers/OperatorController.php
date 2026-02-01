@@ -45,7 +45,7 @@ class OperatorController extends Controller
                 ->route('operators.index')
                 ->with('error', 'This operator is already used in drilling reports and cannot be deleted.');
         }
-        
+
         $operator->delete();
 
         return redirect()->route('operators.index')->with('success', 'Operator deleted successfully');

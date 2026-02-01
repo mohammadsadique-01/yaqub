@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Debitor;
-use App\Models\Operator;
-use Illuminate\View\View;
 use App\Models\DebitorSite;
-use Illuminate\Http\Request;
 use App\Models\DrillingReport;
+use App\Models\Operator;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
 
 class DrillingController extends Controller
@@ -62,19 +62,19 @@ class DrillingController extends Controller
             ->where('financial_year_id', session('financial_year_id'));
 
         // Clean arrays
-        $debitors  = $this->cleanArray($request->debitors ?? []);
-        $sites     = $this->cleanArray($request->sites ?? []);
+        $debitors = $this->cleanArray($request->debitors ?? []);
+        $sites = $this->cleanArray($request->sites ?? []);
         $operators = $this->cleanArray($request->operators ?? []);
-        
-        if (!empty($debitors)) {
+
+        if (! empty($debitors)) {
             $query->whereIn('debitor_id', $debitors);
         }
 
-        if (!empty($sites)) {
+        if (! empty($sites)) {
             $query->whereIn('debitor_site_id', $sites);
         }
 
-        if (!empty($operators)) {
+        if (! empty($operators)) {
             $query->whereIn('operator_id', $operators);
         }
 
@@ -87,9 +87,9 @@ class DrillingController extends Controller
 
         return DataTables::of($query->latest())
             ->addIndexColumn()
-            ->addColumn('debitor', fn($r) => $r->debitor->account_name ?? '-')
-            ->addColumn('site', fn($r) => $r->site->site_name ?? '-')
-            ->addColumn('operator', fn($r) => $r->operator->name ?? '-')
+            ->addColumn('debitor', fn ($r) => $r->debitor->account_name ?? '-')
+            ->addColumn('site', fn ($r) => $r->site->site_name ?? '-')
+            ->addColumn('operator', fn ($r) => $r->operator->name ?? '-')
             ->addColumn('action', function ($row) {
                 return view('backend.drilling.action', compact('row'))->render();
             })
@@ -99,7 +99,7 @@ class DrillingController extends Controller
 
     public function cleanArray($arr)
     {
-        return array_values(array_filter($arr, fn ($v) => !is_null($v) && $v !== ''));
+        return array_values(array_filter($arr, fn ($v) => ! is_null($v) && $v !== ''));
     }
 
     public function destroy(DrillingReport $drillingReport): JsonResponse
@@ -120,20 +120,20 @@ class DrillingController extends Controller
 
     public function edit(DrillingReport $drilling): JsonResponse
     {
-        return response()->json($drilling->load(['debitor','site','operator']));
+        return response()->json($drilling->load(['debitor', 'site', 'operator']));
     }
 
     public function update(Request $request, DrillingReport $drilling): JsonResponse
     {
         $request->validate([
             'start_time' => 'required|numeric',
-            'end_time'   => 'required|numeric|gt:start_time',
+            'end_time' => 'required|numeric|gt:start_time',
         ]);
 
-        $drilling->update($request->except(['financial_year_id ','debitor_id','debitor_site_id','operator_id']));
+        $drilling->update($request->except(['financial_year_id ', 'debitor_id', 'debitor_site_id', 'operator_id']));
 
         return response()->json([
-            'message' => 'Drilling report updated successfully'
+            'message' => 'Drilling report updated successfully',
         ]);
     }
 
@@ -148,5 +148,4 @@ class DrillingController extends Controller
 
         return response()->json($sites);
     }
-
 }

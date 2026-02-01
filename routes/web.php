@@ -1,15 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OtpController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DebitorController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DebitorSiteController;
 use App\Http\Controllers\DrillingController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OperatorController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DebitorSiteController;
+use App\Http\Controllers\OtpController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
 
@@ -56,9 +56,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/{debitor}', [DebitorController::class, 'show'])->name('show');
 
         Route::get('/{debitor}/sites', [DebitorController::class, 'getSites'])->name('sites');
-        
+
     });
-    
+
     Route::delete('/debitor-sites/{debitorSite}', [DebitorSiteController::class, 'destroy'])->name('debitor-sites.destroy');
 
     Route::get('/locations/list', [LocationController::class, 'list'])->name('locations.list');

@@ -17,5 +17,4 @@ class DebitorSite extends Model
     {
         return $this->hasMany(DrillingReport::class, 'debitor_site_id');
     }
-
 }
