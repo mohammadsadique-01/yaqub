@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DrillingController extends Controller
 {
@@ -58,6 +59,9 @@ class DrillingController extends Controller
 
     public function getData(Request $request)
     {
+        logger($request->from_date);
+        logger($request->to_date);
+
         $query = DrillingReport::with(['debitor', 'site', 'operator'])
             ->where('financial_year_id', session('financial_year_id'));
 
@@ -87,6 +91,7 @@ class DrillingController extends Controller
 
         return DataTables::of($query->latest())
             ->addIndexColumn()
+
             ->addColumn('debitor', fn ($r) => $r->debitor->account_name ?? '-')
             ->addColumn('site', fn ($r) => $r->site->site_name ?? '-')
             ->addColumn('operator', fn ($r) => $r->operator->name ?? '-')
@@ -147,5 +152,47 @@ class DrillingController extends Controller
             ->get();
 
         return response()->json($sites);
+    }
+
+    public function pdf(Request $request)
+    {
+        $query = DrillingReport::with(['debitor', 'site', 'operator'])
+            ->where('financial_year_id', session('financial_year_id'));
+
+        if (!empty($request->debitors)) {
+            $query->whereIn('debitor_id', $request->debitors);
+        }
+
+        if (!empty($request->sites)) {
+            $query->whereIn('debitor_site_id', $request->sites);
+        }
+
+        if (!empty($request->operators)) {
+            $query->whereIn('operator_id', $request->operators);
+        }
+
+        if ($request->filled('from_date') || $request->filled('to_date')) {
+            $query->whereBetween('date', [
+                $request->from_date ?? '1900-01-01',
+                $request->to_date ?? now()->toDateString(),
+            ]);
+        }
+
+        $reports = $query->orderBy('date')->get();
+
+        // totals
+        $totals = [
+            'hours'  => $reports->sum('total_hours'),
+            'diesel' => $reports->sum('diesel'),
+            'meter'  => $reports->sum('meter'),
+        ];
+
+        $pdf = Pdf::loadView('backend.drilling.pdf', compact(
+            'reports',
+            'totals',
+            'request'
+        ))->setPaper('A4', 'landscape');
+
+        return $pdf->stream('drilling-report.pdf');
     }
 }

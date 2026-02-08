@@ -28,7 +28,7 @@
             </div>
 
             {{-- Operator --}}
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <label class="small text-muted">Operator</label>
                 <select id="filterOperator" class="form-control select2" multiple="multiple" data-placeholder="Select Operator">
                     @foreach($operators as $operator)
@@ -37,17 +37,39 @@
                 </select>
             </div>
 
-            {{-- From Date --}}
+
+
+            {{-- Date Range --}}
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Date range:</label>
+
+                    <div class="input-group">
+                    <button type="button" class="btn btn-default" id="daterange-btn">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>Date range picker</span>
+                        <i class="fas fa-caret-down"></i>
+                    </button>
+                    </div>
+
+                    <input type="hidden" id="startDate">
+                    <input type="hidden" id="endDate">
+                </div>
+            </div>
+
+
+
+
+{{-- 
             <div class="col-md-2">
                 <label class="small text-muted">From Date</label>
                 <input type="date" id="filterFromDate" class="form-control form-control-sm">
             </div>
 
-            {{-- To Date --}}
             <div class="col-md-2">
                 <label class="small text-muted">To Date</label>
                 <input type="date" id="filterToDate" class="form-control form-control-sm">
-            </div>
+            </div> --}}
 
         </div>
 

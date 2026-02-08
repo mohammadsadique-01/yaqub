@@ -3,6 +3,7 @@
         <thead class="thead-light">
             <tr>
                 <th>#</th>
+                <th>Date</th>
                 <th>Debitor</th>
                 <th>Site</th>
                 <th>Operator</th>

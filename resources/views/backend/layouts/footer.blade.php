@@ -84,7 +84,7 @@
 
 <script>
   $(function () {
-    $('#example1').DataTable();
+    $('.datatable').DataTable();
     $('[data-mask]').inputmask();
     bsCustomFileInput.init();
 
@@ -109,6 +109,17 @@
     setTimeout(() => {
         $('.alert').alert('close');
     }, 3000);
+
+      $('#checkInDate').datetimepicker({
+      format: 'YYYY-MM-DD', // Adjust the format as needed
+      minDate: moment(),
+      defaultDate: moment().toDate(),
+
+    });
+    $('#checkInDate input').on('click', function() {
+      $('#checkInDate').datetimepicker('toggle');
+    });
+    
   });
 
   $.ajaxSetup({

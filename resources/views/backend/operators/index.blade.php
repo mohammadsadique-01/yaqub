@@ -104,7 +104,7 @@
                 </div>
                 <div class="col-sm-7">
                     <div class="table-responsive" style="max-height: 380px;">
-                        <table id="example1" class="table table-bordered table-sm">
+                        <table class="table table-bordered table-sm datatable">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
@@ -116,7 +116,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($operators as $op)
+                                @foreach($operators as $op)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $op->name }}</td>
@@ -125,7 +125,6 @@
                                         {{ $op->address }}
                                     </td>
                                     <td>{{ $op->remark }}</td>
-
                                     <td class="text-center">
                                         <a href="{{ route('operators.edit', $op->id) }}" class="btn btn-xs btn-warning">
                                             <i class="fas fa-edit"></i>
@@ -142,13 +141,8 @@
                                             </button>
                                         </form>
                                     </td>
-
                                 </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="5" class="text-center">No Data Found</td>
-                                </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

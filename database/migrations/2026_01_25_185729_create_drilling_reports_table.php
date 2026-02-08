@@ -21,9 +21,9 @@ return new class extends Migration
             $table->foreignId('debitor_site_id')->constrained()->cascadeOnDelete();
             $table->foreignId('operator_id')->constrained()->cascadeOnDelete();
 
-            $table->decimal('start_time', 5, 2);
-            $table->decimal('end_time', 5, 2);
-            $table->decimal('total_hours', 5, 2);
+            $table->decimal('start_time', 12, 2);
+            $table->decimal('end_time', 12, 2);
+            $table->decimal('total_hours', 12, 2);
 
             $table->decimal('diesel', 8, 2)->nullable();
             $table->integer('hole')->nullable();

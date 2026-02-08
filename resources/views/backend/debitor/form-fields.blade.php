@@ -49,7 +49,7 @@
                 <h3 class="card-title text-sm">Location</h3>
             </div>
             <div class="card-body p-2">
-                <label class="small text-muted">Select Location</label>
+                <label class="small text-muted">Create Location</label>
                 <div class="input-group input-group-sm mb-2">
                     <select id="locationSelect" name="location_id" class="form-control"></select>
                     <div class="input-group-append">
@@ -80,7 +80,7 @@
                         <label class="small text-muted">Village</label>
 
                         <select name="village_id" id="villageSelect" class="form-control form-control-sm mb-1">
-                            <option value="">-- Select Village --</option>
+                            <option value="">-- Create Village --</option>
                             {{-- existing villages loaded here --}}
                         </select>
 

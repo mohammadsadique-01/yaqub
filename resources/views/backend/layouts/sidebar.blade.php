@@ -77,124 +77,18 @@
                                 <p>Drilling Report</p>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('invoice.index') }}" class="nav-link {{ (Request::segment(1) == 'invoice') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-file-invoice"></i>
+
+                                <p>Invoice</p>
+                            </a>
+                        </li>
+
                     @endif
 
                     @if(Auth::user()->role === 'client')
-
-                        <li class="nav-item {{ (Request::segment(1) == 'manage-room') ? 'menu-open' : '' }}">
-                            <a href="" class="nav-link {{ (Request::segment(1) == 'manage-room') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-bed"></i>
-                                <p>
-                                    Room Management
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="" class="nav-link {{ (Request::segment(2) == 'create-room') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Create Room</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="" class="nav-link {{ (Request::segment(2) == 'room-list') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Room List</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item {{ (Request::segment(1) == 'manage-guest') ? 'menu-open' : '' }}">
-                            <a href="" class="nav-link {{ (Request::segment(1) == 'manage-guest') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-user-secret"></i>
-                                <p>
-                                    Guest Management
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="" class="nav-link {{ (Request::segment(2) == 'add-guest') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Add Guest</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="" class="nav-link {{ (Request::segment(2) == 'guest-list') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Guest List</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="" class="nav-link {{ (Request::segment(2) == 'view-guest') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>View Guest</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="" class="nav-link {{ (Request::segment(2) == 'discontinue-guest') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Discontinue Guest</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item {{ (Request::segment(1) == 'manage-billing') ? 'menu-open' : '' }}">
-                            <a href="" class="nav-link {{ (Request::segment(1) == 'manage-billing') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-money"></i>
-                                <p>
-                                    Billing Management
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="" class="nav-link {{ (Request::segment(2) == 'unpaid-list') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Unpaid List</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="" class="nav-link {{ (Request::segment(2) == 'paid-list') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Paid List</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item {{ (Request::segment(1) == 'setting') ? 'menu-open' : '' }}">
-                            <a href="" class="nav-link {{ (Request::segment(1) == 'setting') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-cog"></i>
-                                <p>
-                                    Setting
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="" class="nav-link {{ (Request::segment(2) == 'design-mail-template') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Design Mail Template</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="" class="nav-link {{ (Request::segment(2) == 'receipt-bill') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Receipt Bill</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="" class="nav-link {{ (Request::segment(1) == 'subscription-billing') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-money-bill-wave"></i>
-                                <p>Subscription Billing</p>
-                            </a>
-                        </li>
 
                     @endif
 

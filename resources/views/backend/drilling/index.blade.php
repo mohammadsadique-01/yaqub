@@ -41,8 +41,16 @@
             <div id="tableSection">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Drilling List</h3>
+                        <h3 class="card-title"><i class="fas fa-list mr-1"></i> Drilling List</h3>
+
+                        <div align="right">
+                            <button id="downloadPdf" class="btn btn-danger btn-sm">
+                                <i class="fas fa-file-pdf"></i> Generate PDF
+                            </button>
+                        </div>
                     </div>
+
+
 
                     <div class="card-body table-responsive p-0">
                         @include('backend.drilling.table')
@@ -78,6 +86,47 @@ let drillingTable;
 
 $(function() {
 
+    /** Date range picker */
+    /** start */
+        let start = moment().startOf('month');
+        let end   = moment().endOf('month');
+
+        function updateDateRange(start, end) {
+            $('#daterange-btn span').html(
+                start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY')
+            );
+
+            $('#startDate').val(start.format('YYYY-MM-DD'));
+            $('#endDate').val(end.format('YYYY-MM-DD'));
+
+        }
+
+        // AdminLTE daterange button
+        $('#daterange-btn').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1,'days'), moment().subtract(1,'days')],
+                'Last 7 Days': [moment().subtract(6,'days'), moment()],
+                'Last 30 Days': [moment().subtract(29,'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [
+                    moment().subtract(1,'month').startOf('month'),
+                    moment().subtract(1,'month').endOf('month')
+                ]
+            },
+            locale: {
+                format: 'YYYY-MM-DD',
+            }
+            }, updateDateRange
+        );
+
+        // set default text
+        updateDateRange(start, end);
+
+    /** end */
+
     function initDrillingTable() {
         if (!$.fn.DataTable.isDataTable('#drillingTable')) {
             drillingTable = $('#drillingTable').DataTable({
@@ -91,12 +140,16 @@ $(function() {
                         d.debitors   = $('#filterDebitor').val();
                         d.sites      = $('#filterSite').val();
                         d.operators  = $('#filterOperator').val();
-                        d.from_date  = $('#filterFromDate').val();
-                        d.to_date    = $('#filterToDate').val();
+
+                        d.from_date  = $('#startDate').val();
+                        d.to_date    = $('#endDate').val();
+                        // d.from_date  = $('#filterFromDate').val();
+                        // d.to_date    = $('#filterToDate').val();
                     }
                 },
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable:false },
+                    { data: 'date', name: 'date' },
                     { data: 'debitor', name: 'debitor.account_name' },
                     { data: 'site', name: 'site.site_name' },
                     { data: 'operator', name: 'operator.name' },
@@ -111,9 +164,9 @@ $(function() {
     }
 
     initDrillingTable();
-    
 
-    
+
+
     // Calculate total hours
     function calculateHours() {
         let start = parseFloat($('#startTime').val());
@@ -131,7 +184,7 @@ $(function() {
             $('#totalHours').val('');
             return;
         }
-        
+
         if (total === 0) {
             $('#totalHours').val('');
             return;
@@ -348,7 +401,20 @@ $(function() {
         });
     });
 
+    $('#downloadPdf').on('click', function () {
+
+        let params = $.param({
+            debitors:  $('#filterDebitor').val(),
+            sites:     $('#filterSite').val(),
+            operators: $('#filterOperator').val(),
+            from_date: $('#startDate').val(),
+            to_date:   $('#endDate').val(),
+        });
+
+        window.open("{{ route('drilling.drilling.pdf') }}?" + params, '_blank');
+    });
 });
+
 
 
 </script>

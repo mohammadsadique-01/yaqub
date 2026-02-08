@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DebitorController;
 use App\Http\Controllers\DebitorSiteController;
 use App\Http\Controllers\DrillingController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\OtpController;
@@ -81,7 +82,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/{drilling}/edit', [DrillingController::class, 'edit'])->name('edit');
         Route::put('/{drilling}', [DrillingController::class, 'update'])->name('update');
         Route::get('/filter/sites-by-debitors', [DrillingController::class, 'getSitesByDebitors'])->name('filterSiteBydebitor');
+        Route::get('drilling/pdf', [DrillingController::class, 'pdf'])->name('drilling.pdf');
 
     });
+
+    Route::group(['prefix' => 'invoice', 'as' => 'invoice.'], function () {
+        Route::get('/', [InvoiceController::class, 'index'])->name('index');
+
+    });
+
 
 });

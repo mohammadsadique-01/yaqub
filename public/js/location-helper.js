@@ -1,6 +1,6 @@
 function loadLocations(selectedId = null) {
     $.get('/locations/list', function (locations) {
-        let options = `<option value="">Select Location</option>`;
+        let options = `<option value="">-- Create Location --</option>`;
 
         locations.forEach(location => {
             options += `
@@ -18,6 +18,7 @@ function loadLocations(selectedId = null) {
 
         $('#locationSelect').html(options);
         $('#deleteLocationBtn').prop('disabled', !$('#locationSelect').val());
+        $('#villageInput').prop('disabled', $('#locationSelect').val());
     });
 }
 
@@ -40,7 +41,7 @@ if (locationSelect) {
             loadVillages(locationId);
         } else {
             // clear villages if no location
-            $('#villageSelect').html('<option value="">-- Select Village --</option>');
+            $('#villageSelect').html('<option value="">-- Create Village --</option>');
         }
 
         $('#villageInput').val('').prop('disabled', false);
@@ -90,14 +91,14 @@ $(document).on('click', '#deleteLocationBtn', function () {
 function loadVillages(locationId) {
     if (!locationId) {
         $('#villageSelect')
-            .html('<option value="">-- Select Village --</option>')
+            .html('<option value="">-- Create Village --</option>')
             .prop('disabled', true);
         return;
     }
 
     $.get('/villages/list', { location_id: locationId }, function (villages) {
 
-        let options = `<option value="">-- Select Village --</option>`;
+        let options = `<option value="">-- Create Village --</option>`;
 
         villages.forEach(village => {
             const selected = (selectedVillageId && selectedVillageId == village.id)

@@ -127,7 +127,7 @@ class DebitorController extends Controller
 
     public function edit(Debitor $debitor): JsonResponse
     {
-        $debitor->load(['sites', 'village', 'location']); // load related sites
+        $debitor->load(['sites', 'village', 'location']);
 
         return response()->json([
             'id' => $debitor->id,
@@ -160,7 +160,15 @@ class DebitorController extends Controller
             $locationId = $debitor->location_id;
 
             if ($request->filled('location_id')) {
-                $locationId = $request->location_id;
+                $location = Location::findOrFail($request->location_id);
+
+                $location->update([
+                    'state'       => $request->state,
+                    'district'    => $request->district,
+                    'state_code'  => $request->state_code,
+                ]);
+
+                $locationId = $location->id;
             } elseif ($request->filled('state') && $request->filled('district')) {
                 $location = Location::create([
                     'state' => $request->state,
