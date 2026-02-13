@@ -6,6 +6,7 @@ use App\Http\Controllers\DebitorController;
 use App\Http\Controllers\DebitorSiteController;
 use App\Http\Controllers\DrillingController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\OtpController;
@@ -91,5 +92,6 @@ Route::middleware('auth')->group(function () {
 
     });
 
+    Route::resource('items', ItemController::class);
 
 });

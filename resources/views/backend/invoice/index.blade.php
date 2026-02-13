@@ -2,6 +2,41 @@
 
 @section('title', 'Invoice')
 
+@push('styles')
+    <style>
+        .vertical-divider {
+            width: 2px;
+            height: 70px;
+            background-color: #dee2e6;
+            margin-top: 22px;
+        }
+    </style>
+    <style>
+        /* Strong top border for entire tfoot */
+        #itemsTable tfoot {
+            border-top: 3px solid #000 !important;
+        }
+
+        /* Optional: make totals section more highlighted */
+        #itemsTable tfoot tr {
+            background-color: #f8f9fa;
+        }
+
+        /* Optional: extra bold line before first total row only */
+        #itemsTable tfoot tr:first-child td {
+            border-top: 3px solid #000 !important;
+        }
+    </style>
+    <style>
+        #itemsTable tfoot tr:first-child td {
+            padding-top: 15px !important;   /* space above */
+            border-top: 3px solid #000 !important;
+        }
+    </style>
+
+
+@endpush
+
 @section('content')
 
     <div class="content-header">
@@ -72,6 +107,7 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('js/items.js') }}"></script>
 <script>
 $(function() {
     // Show form button
@@ -110,6 +146,102 @@ $(function() {
         });
 
     });
+
+    // Add Row
+    $('#addRowBtn').on('click', function () {
+        let newRow = $('#itemsTable tbody tr:first').clone();
+
+        newRow.find('input').val('');
+        newRow.find('.qty').val();
+        newRow.find('.price, .aprice').val();
+
+        $('#itemsTable tbody').append(newRow);
+        updateSerialNumbers();
+        calculateTotals();
+    });
+
+    // Remove Row
+    $(document).on('click', '.removeRow', function () {
+        if ($('#itemsTable tbody tr').length > 1) {
+            $(this).closest('tr').remove();
+            updateSerialNumbers();
+            calculateTotals();
+        }
+    });
+
+    // Auto calculation
+    $(document).on('input', '.qty, .price, .aprice', function () {
+        let row = $(this).closest('tr');
+        calculateRow(row);
+        calculateTotals();
+    });
+    
+    $(document).on('input', '#cgstPercent, #sgstPercent, #igstPercent', function () {
+        calculateTotals();
+    });
+
+    function updateSerialNumbers() {
+        $('#itemsTable tbody tr').each(function (index) {
+            $(this).find('.sn').text(index + 1);
+        });
+    }
+
+    function calculateTotals() {
+
+        let totalQty = 0;
+        let totalAmount = 0;
+        let totalAAmount = 0;
+
+        $('#itemsTable tbody tr').each(function () {
+
+            totalQty += parseFloat($(this).find('.qty').val()) || 0;
+            totalAmount += parseFloat($(this).find('.amount').val()) || 0;
+            totalAAmount += parseFloat($(this).find('.aamount').val()) || 0;
+
+        });
+
+        $('#totalQty').val(totalQty.toFixed(2));
+        $('#totalAmount').val(totalAmount.toFixed(2));
+        $('#totalAAmount').val(totalAAmount.toFixed(2));
+
+        // TAX CALCULATION
+        let cgstPercent = parseFloat($('#cgstPercent').val()) || 0;
+        let sgstPercent = parseFloat($('#sgstPercent').val()) || 0;
+        let igstPercent = parseFloat($('#igstPercent').val()) || 0;
+
+        let cgstAmount = (totalAmount * cgstPercent) / 100;
+        let sgstAmount = (totalAmount * sgstPercent) / 100;
+        let igstAmount = (totalAmount * igstPercent) / 100;
+
+        $('#cgstAmount').val(cgstAmount.toFixed(2));
+        $('#sgstAmount').val(sgstAmount.toFixed(2));
+        $('#igstAmount').val(igstAmount.toFixed(2));
+
+        let netAmount = totalAmount + cgstAmount + sgstAmount + igstAmount;
+
+        $('#netAmount').val(netAmount.toFixed(2));
+    }
+
+    function calculateRow(row) {
+
+        let qty = parseFloat(row.find('.qty').val()) || 0;
+        let price = parseFloat(row.find('.price').val()) || 0;
+        let aprice = parseFloat(row.find('.aprice').val()) || 0;
+
+        let amount = qty * price;
+        let aamount = qty * aprice;
+
+        row.find('.amount').val(amount.toFixed(2));
+        row.find('.aamount').val(aamount.toFixed(2));
+    }
+
+    calculateTotals();
+
+    $('#itemSelect').change(function () {
+        let selectedText = $("#itemSelect option:selected").text();
+        $('#itemInput').val(selectedText);
+    });
+
 });
 
 </script>
