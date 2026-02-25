@@ -61,6 +61,10 @@ Route::middleware('auth')->group(function () {
 
     });
 
+    Route::group(['prefix' => 'master'], function () {
+        Route::resource('items', ItemController::class);
+    });
+
     Route::delete('/debitor-sites/{debitorSite}', [DebitorSiteController::class, 'destroy'])->name('debitor-sites.destroy');
 
     Route::get('/locations/list', [LocationController::class, 'list'])->name('locations.list');
@@ -91,7 +95,5 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [InvoiceController::class, 'index'])->name('index');
 
     });
-
-    Route::resource('items', ItemController::class);
 
 });

@@ -12,7 +12,7 @@
             <td>{{ $drillingReport->date }}</td>
         </tr>
         <tr>
-            <th>Debitor</th>
+            <th>Account</th>
             <td>{{ $drillingReport->debitor->account_name ?? '-' }}</td>
         </tr>
         <tr>

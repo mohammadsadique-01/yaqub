@@ -2,6 +2,10 @@
 
     <div class="form-row">
         <div class="form-group col-md-3">
+            <label>Invoice Number</label>
+            <input type="text" name="invoice_number" class="form-control" value="AME/25-26/01">
+        </div>
+        <div class="form-group col-md-3">
             <label>Date</label>
             <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}">
         </div>
@@ -22,45 +26,7 @@
             </select>
         </div>
 
-
-        {{-- Add / Manage Item --}}
-        <div class="form-group col-md-3">
-            <label>Add / Manage Item</label>
-
-            <div class="d-flex align-items-start">
-
-                {{-- Left side : input + select --}}
-                <div class="flex-grow-1 mr-2">
-                    <input type="text" id="itemInput" class="form-control mb-2" placeholder="New site name">
-
-                    <select id="itemSelect" class="form-control">
-                        <option value="">Select site</option>
-                    </select>
-                </div>
-
-                {{-- Right side : vertical buttons --}}
-                <div class="btn-group-vertical btn-group-sm">
-                    <button type="button" id="addItem" class="btn btn-success btn-sm">
-                        <i class="fas fa-plus"></i>
-                    </button>
-
-                    <button type="button" id="editItem" class="btn btn-warning btn-sm">
-                        <i class="fas fa-edit"></i>
-                    </button>
-
-                    <button type="button" id="deleteItem" class="btn btn-danger btn-sm">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-
-            </div>
-        </div>
-
-
-
     </div>
-
-
 
     <div class="card mt-3">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -93,6 +59,14 @@
                         <td>
                             <select class="form-control form-control-sm itemSelect">
                                 <option value="">Select Item</option>
+                                 @foreach($items as $item)
+                                    <option 
+                                        value="{{ $item->id }}"
+                                        data-hsn="{{ $item->hsn_sac }}"
+                                        data-unit="{{ $item->unit }}">
+                                        {{ $item->name }}
+                                    </option>
+                                @endforeach
                             </select>
                         </td>
 
@@ -156,8 +130,8 @@
 
                         <!-- Total A.Amount -->
                         <td>
-                            <input type="number" id="totalAAmount"
-                                class="form-control form-control-sm text-right" readonly>
+                            <input type="number" id="totalaAmount"
+                                class="form-control form-control-sm text-right" readonly>       
                         </td>
 
                         <td></td>
@@ -196,11 +170,49 @@
                         <td colspan="3"></td>
                     </tr>
                     <tr class="bg-light font-weight-bold text-right">
+                        <td colspan="4"></td>
+                        <td>Freight</td>
+                        <td>
+                        </td>
+                        <td>
+                            <input type="number" id="freightAmount" class="form-control form-control-sm text-right">
+                        </td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="bg-light font-weight-bold text-right">
+                        <td colspan="4"></td>
+                        <td>Discount</td>
+                        <td>
+                            <div class="d-flex">
+                                <select id="discountType" class="form-control form-control-sm mr-1" style="width:80px;">
+                                    <option value="fixed">₹</option>
+                                    <option value="percent">%</option>
+                                </select>
+
+                                <input type="number" id="discount" class="form-control form-control-sm text-right" placeholder="Enter">
+                            </div>
+                        </td>
+                        <td>
+                            <input type="number" id="discountAmount" class="form-control form-control-sm text-right" readonly>
+                        </td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="bg-light font-weight-bold text-right">
                         <td colspan="6">Net Amount</td>
                         <td>
                             <input type="number" id="netAmount" class="form-control form-control-sm text-right" readonly>
                         </td>
-                        <td colspan="3"></td>
+                        <td></td>
+                        <td>
+                           <div class="d-flex align-items-center">
+                                <input type="checkbox" id="with_tax" class="mr-1" checked>
+                                <label for="with_tax" class="mb-0 mr-2">Tax</label>
+
+                                <input type="number" id="netaAmount"
+                                    class="form-control form-control-sm text-right" readonly>
+                            </div>
+                        </td>
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>

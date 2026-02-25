@@ -163,9 +163,9 @@ class DebitorController extends Controller
                 $location = Location::findOrFail($request->location_id);
 
                 $location->update([
-                    'state'       => $request->state,
-                    'district'    => $request->district,
-                    'state_code'  => $request->state_code,
+                    'state' => $request->state,
+                    'district' => $request->district,
+                    'state_code' => $request->state_code,
                 ]);
 
                 $locationId = $location->id;

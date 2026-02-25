@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->text('name');
+            $table->string('hsn_sac');
+            $table->string('unit');
             $table->timestamps();
         });
     }

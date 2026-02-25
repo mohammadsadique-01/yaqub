@@ -6,11 +6,11 @@ use App\Models\Debitor;
 use App\Models\DebitorSite;
 use App\Models\DrillingReport;
 use App\Models\Operator;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class DrillingController extends Controller
 {
@@ -59,9 +59,6 @@ class DrillingController extends Controller
 
     public function getData(Request $request)
     {
-        logger($request->from_date);
-        logger($request->to_date);
-
         $query = DrillingReport::with(['debitor', 'site', 'operator'])
             ->where('financial_year_id', session('financial_year_id'));
 
@@ -92,9 +89,17 @@ class DrillingController extends Controller
         return DataTables::of($query->latest())
             ->addIndexColumn()
 
+            ->addColumn('date', fn ($r) => format_date($r->date))
             ->addColumn('debitor', fn ($r) => $r->debitor->account_name ?? '-')
             ->addColumn('site', fn ($r) => $r->site->site_name ?? '-')
             ->addColumn('operator', fn ($r) => $r->operator->name ?? '-')
+
+            ->addColumn('hole', fn ($r) => indian_number($r->hole ?? 0))
+            ->addColumn('meter', fn ($r) => indian_number($r->meter ?? 0))
+            ->addColumn('diesel', fn ($r) => indian_number($r->diesel ?? 0))
+            ->addColumn('total_hours', fn ($r) => indian_number($r->total_hours ?? 0))
+            ->addColumn('balance_diesel', fn ($r) => indian_number($r->balance_diesel ?? 0))
+
             ->addColumn('action', function ($row) {
                 return view('backend.drilling.action', compact('row'))->render();
             })
@@ -159,15 +164,15 @@ class DrillingController extends Controller
         $query = DrillingReport::with(['debitor', 'site', 'operator'])
             ->where('financial_year_id', session('financial_year_id'));
 
-        if (!empty($request->debitors)) {
+        if (! empty($request->debitors)) {
             $query->whereIn('debitor_id', $request->debitors);
         }
 
-        if (!empty($request->sites)) {
+        if (! empty($request->sites)) {
             $query->whereIn('debitor_site_id', $request->sites);
         }
 
-        if (!empty($request->operators)) {
+        if (! empty($request->operators)) {
             $query->whereIn('operator_id', $request->operators);
         }
 
@@ -182,9 +187,11 @@ class DrillingController extends Controller
 
         // totals
         $totals = [
-            'hours'  => $reports->sum('total_hours'),
-            'diesel' => $reports->sum('diesel'),
-            'meter'  => $reports->sum('meter'),
+            'holes' => indian_number($reports->sum('hole')),
+            'meter' => indian_number($reports->sum('meter')),
+            'diesel' => indian_number($reports->sum('diesel')),
+            'hours' => indian_number($reports->sum('total_hours')),
+            'balance_diesel' => indian_number($reports->sum('balance_diesel')),
         ];
 
         $pdf = Pdf::loadView('backend.drilling.pdf', compact(

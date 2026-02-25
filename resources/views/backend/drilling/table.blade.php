@@ -1,16 +1,17 @@
 <div id="drillingTableWrapper" class="mt-2">
-    <table id="drillingTable" class="table table-bordered table-hover text-nowrap">
+    <table id="drillingTable" class="table table-bordered table-hover ">
         <thead class="thead-light">
             <tr>
                 <th>#</th>
                 <th>Date</th>
-                <th>Debitor</th>
+                <th>Account</th>
                 <th>Site</th>
                 <th>Operator</th>
-                <th>Hours</th>
-                <th>Diesel</th>
+                <th>Hole</th>
                 <th>Meter</th>
-                <th>Remark</th>
+                <th>Diesel</th>
+                <th>Hours</th>
+                <th>Balance Diesel</th>
                 <th>Action</th> 
             </tr>
         </thead>

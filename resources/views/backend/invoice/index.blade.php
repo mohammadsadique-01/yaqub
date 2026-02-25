@@ -76,8 +76,6 @@
                         <h3 class="card-title"><i class="fas fa-list mr-1"></i> Invoice List</h3>
                     </div>
 
-
-
                     <div class="card-body table-responsive p-0">
                         @include('backend.invoice.table')
                     </div>
@@ -95,7 +93,6 @@
                     @include('backend.invoice.form')
 
                     <div class="card-footer text-right">
-                        <button type="reset" class="btn btn-secondary"><i class="fas fa-undo"></i> Reset</button>
                         <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
                     </div>
                 </form>
@@ -107,7 +104,6 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/items.js') }}"></script>
 <script>
 $(function() {
     // Show form button
@@ -152,8 +148,9 @@ $(function() {
         let newRow = $('#itemsTable tbody tr:first').clone();
 
         newRow.find('input').val('');
-        newRow.find('.qty').val();
-        newRow.find('.price, .aprice').val();
+        // newRow.find('.qty').val();
+        // newRow.find('.price, .aprice').val();
+        newRow.find('.itemSelect').val('');
 
         $('#itemsTable tbody').append(newRow);
         updateSerialNumbers();
@@ -180,6 +177,11 @@ $(function() {
         calculateTotals();
     });
 
+    $(document).on('input change', '#discount, #discountType', function () {
+        calculateTotals();
+    });
+
+
     function updateSerialNumbers() {
         $('#itemsTable tbody tr').each(function (index) {
             $(this).find('.sn').text(index + 1);
@@ -190,19 +192,19 @@ $(function() {
 
         let totalQty = 0;
         let totalAmount = 0;
-        let totalAAmount = 0;
+        let totalaAmount = 0;
 
         $('#itemsTable tbody tr').each(function () {
 
             totalQty += parseFloat($(this).find('.qty').val()) || 0;
             totalAmount += parseFloat($(this).find('.amount').val()) || 0;
-            totalAAmount += parseFloat($(this).find('.aamount').val()) || 0;
+            totalaAmount += parseFloat($(this).find('.aamount').val()) || 0;
 
         });
 
         $('#totalQty').val(totalQty.toFixed(2));
         $('#totalAmount').val(totalAmount.toFixed(2));
-        $('#totalAAmount').val(totalAAmount.toFixed(2));
+        $('#totalaAmount').val(totalaAmount.toFixed(2));
 
         // TAX CALCULATION
         let cgstPercent = parseFloat($('#cgstPercent').val()) || 0;
@@ -217,9 +219,30 @@ $(function() {
         $('#sgstAmount').val(sgstAmount.toFixed(2));
         $('#igstAmount').val(igstAmount.toFixed(2));
 
-        let netAmount = totalAmount + cgstAmount + sgstAmount + igstAmount;
+        // ================= DISCOUNT =================
+        let discountType = $('#discountType').val();
+        let discountValue = parseFloat($('#discount').val()) || 0;
+        let discountAmount = 0;
 
+        let grossAmount = totalAmount + cgstAmount + sgstAmount + igstAmount;
+
+        if (discountType === 'percent') {
+            discountAmount = (grossAmount * discountValue) / 100;
+        } else {
+            discountAmount = discountValue;
+        }
+
+        if (discountAmount > grossAmount) {
+            discountAmount = grossAmount;
+        }
+
+        $('#discountAmount').val(discountAmount.toFixed(2));
+
+        let netAmount = grossAmount - discountAmount;
+        
         $('#netAmount').val(netAmount.toFixed(2));
+
+        calculateFinalTotal();
     }
 
     function calculateRow(row) {
@@ -242,6 +265,41 @@ $(function() {
         $('#itemInput').val(selectedText);
     });
 
+    $(document).on('change', '#with_tax', function () {
+        calculateFinalTotal();
+    });
+
+    function calculateFinalTotal() {
+
+        let totalAmount   = parseFloat($('#totalAmount').val()) || 0;
+        let totalaAmount   = parseFloat($('#totalaAmount').val()) || 0;
+        let cgstAmount    = parseFloat($('#cgstAmount').val()) || 0;
+        let sgstAmount    = parseFloat($('#sgstAmount').val()) || 0;
+        let igstAmount    = parseFloat($('#igstAmount').val()) || 0;
+        let freightAmount = parseFloat($('#freightAmount').val()) || 0;
+        let discountAmount= parseFloat($('#discountAmount').val()) || 0;
+
+        let aAmountTotal = totalaAmount;
+        // If checkbox checked → add tax
+        if ($('#with_tax').is(':checked')) {
+            aAmountTotal = totalaAmount + cgstAmount + sgstAmount + igstAmount + freightAmount - discountAmount;
+        }
+
+        $('#netaAmount').val(aAmountTotal.toFixed(2));
+    }
+
+    $(document).on('change', '.itemSelect', function () {
+        
+        let selectedOption = $(this).find(':selected');
+
+        let hsn  = selectedOption.data('hsn');
+        let unit = selectedOption.data('unit');
+
+        let row = $(this).closest('tr');
+
+        row.find('.hsn').val(hsn);
+        row.find('.unit').val(unit);
+    });
 });
 
 </script>

@@ -8,5 +8,7 @@ class Item extends Model
 {
     protected $fillable = [
         'name',
+        'hsn_sac',
+        'unit',
     ];
 }

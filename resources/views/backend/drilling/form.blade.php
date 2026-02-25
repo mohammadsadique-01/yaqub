@@ -7,9 +7,9 @@
             <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}">
         </div>
         <div class="form-group col-md-3">
-            <label>Debitor <span class="text-danger">*</span></label>
+            <label>Account <span class="text-danger">*</span></label>
             <select name="debitor_id" class="form-control select2bs4 debitorSelect" required>
-                <option value="">Select Debitor</option>
+                <option value="">Select Account</option>
                 @foreach($debitors as $debitor)
                     <option value="{{ $debitor->id }}">{{ $debitor->account_name }}</option>
                 @endforeach

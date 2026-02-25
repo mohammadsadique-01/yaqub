@@ -3,61 +3,62 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ItemController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(): View
     {
         $items = Item::latest()->get();
 
-        return response()->json([
-            'status' => true,
-            'data'   => $items
-        ]);
+        return view('backend.items.index', compact('items'));
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'hsn_sac' => 'required',
+            'unit' => 'required',
         ]);
 
-        $item = Item::create([
-            'name' => $request->name
-        ]);
+        Item::create($request->only('name', 'hsn_sac', 'unit'));
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Item added successfully',
-            'data'    => $item
-        ]);
+        return redirect()
+            ->route('items.index')
+            ->with('success', 'Item added successfully');
     }
 
-    public function update(Request $request, Item $item): JsonResponse
+    public function edit(Item $item): View
+    {
+        $items = Item::latest()->get();
+
+        return view('backend.items.index', compact('items', 'item'));
+    }
+
+    public function update(Request $request, Item $item): RedirectResponse
     {
         $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'hsn_sac' => 'required',
+            'unit' => 'required',
         ]);
 
-        $item->update([
-            'name' => $request->name
-        ]);
+        $item->update($request->only('name', 'hsn_sac', 'unit'));
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Item updated successfully'
-        ]);
+        return redirect()
+            ->route('items.index')
+            ->with('success', 'Item updated successfully');
     }
 
-    public function destroy(Item $item): JsonResponse
+    public function destroy(Item $item): RedirectResponse
     {
         $item->delete();
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Item deleted successfully'
-        ]);
+        return redirect()
+            ->route('items.index')
+            ->with('success', 'Item deleted successfully');
     }
 }

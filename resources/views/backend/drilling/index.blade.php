@@ -69,7 +69,6 @@
                     @include('backend.drilling.form')
 
                     <div class="card-footer text-right">
-                        <button type="reset" class="btn btn-secondary"><i class="fas fa-undo"></i> Reset</button>
                         <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
                     </div>
                 </form>
@@ -132,6 +131,7 @@ $(function() {
             drillingTable = $('#drillingTable').DataTable({
                 processing: true,
                 serverSide: true,
+                ordering: false,
                 pageLength: 10,
                 lengthMenu: [10, 25, 50, 100],
                 ajax: {
@@ -153,10 +153,11 @@ $(function() {
                     { data: 'debitor', name: 'debitor.account_name' },
                     { data: 'site', name: 'site.site_name' },
                     { data: 'operator', name: 'operator.name' },
-                    { data: 'total_hours', name: 'total_hours' },
-                    { data: 'diesel', name: 'diesel' },
+                    { data: 'hole', name: 'hole' },
                     { data: 'meter', name: 'meter' },
-                    { data: 'remark', name: 'remark' },
+                    { data: 'diesel', name: 'diesel' },
+                    { data: 'total_hours', name: 'total_hours' },
+                    { data: 'balance_diesel', name: 'balance_diesel' },
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ]
             });

@@ -31,7 +31,9 @@
             "app/Helpers/financial_year.php",
             "app/Helpers/activity.php",
             "app/Helpers/email.php",
-            "app/Helpers/mail.php"
+            "app/Helpers/mail.php",
+            "app/Helpers/number_helper.php",
+            "app/Helpers/date_helper.php"
         ]
     },
     "autoload-dev": {

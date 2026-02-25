@@ -44,6 +44,12 @@
                                         <p>Creditor List</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('items.index') }}" class="nav-link {{ (Request::segment(2) == 'items') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Items List</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 

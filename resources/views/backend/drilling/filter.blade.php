@@ -11,8 +11,8 @@
 
             {{-- Debitor --}}
             <div class="col-md-3">
-                <label class="small text-muted">Debitor</label>
-                <select id="filterDebitor" class="form-control select2" multiple="multiple" data-placeholder="Select Debitor" style="width: 100%;">
+                <label class="small text-muted">Account</label>
+                <select id="filterDebitor" class="form-control select2" multiple="multiple" data-placeholder="Select Account" style="width: 100%;">
                     @foreach($debitors as $debitor)
                         <option value="{{ $debitor->id }}">{{ $debitor->account_name }}</option>
                     @endforeach

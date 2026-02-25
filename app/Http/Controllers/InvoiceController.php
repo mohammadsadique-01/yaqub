@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Debitor;
+use App\Models\Item;
 use App\Models\Operator;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class InvoiceController extends Controller
@@ -13,7 +13,8 @@ class InvoiceController extends Controller
     {
         $debitors = Debitor::latest()->get();
         $operators = Operator::latest()->get();
+        $items = Item::latest()->get();
 
-        return view('backend.invoice.index', compact(['debitors', 'operators']));
+        return view('backend.invoice.index', compact(['debitors', 'operators', 'items']));
     }
 }
