@@ -3,7 +3,7 @@
     <div class="form-row">
         <div class="form-group col-md-3">
             <label>Invoice Number</label>
-            <input type="text" name="invoice_number" class="form-control" value="AME/25-26/01">
+            <input type="text" name="invoice_number" class="form-control" value="{{ $invoiceNumber  }}" readonly>
         </div>
         <div class="form-group col-md-3">
             <label>Date</label>
@@ -57,9 +57,9 @@
                         <td class="text-center sn">1</td>
 
                         <td>
-                            <select class="form-control form-control-sm itemSelect">
+                            <select name="items[0][item_id]" class="form-control form-control-sm itemSelect">
                                 <option value="">Select Item</option>
-                                 @foreach($items as $item)
+                                @foreach($items as $item)
                                     <option 
                                         value="{{ $item->id }}"
                                         data-hsn="{{ $item->hsn_sac }}"
@@ -71,31 +71,31 @@
                         </td>
 
                         <td>
-                            <input type="text" class="form-control form-control-sm hsn">
+                            <input type="text" name="items[0][hsn_sac]" class="form-control form-control-sm hsn" readonly>
                         </td>
 
                         <td>
-                            <input type="text" class="form-control form-control-sm unit">
+                            <input type="text" name="items[0][unit]" class="form-control form-control-sm unit" readonly>
                         </td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm qty">
+                            <input type="number" name="items[0][qty]" class="form-control form-control-sm qty">
                         </td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm price">
+                            <input type="number" name="items[0][price]" class="form-control form-control-sm price">
                         </td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm amount" readonly>
+                            <input type="number" name="items[0][amount]" class="form-control form-control-sm amount" readonly>
                         </td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm aprice">
+                            <input type="number" name="items[0][a_price]" class="form-control form-control-sm aprice">
                         </td>
 
                         <td>
-                            <input type="number" class="form-control form-control-sm aamount" readonly>
+                            <input type="number" name="items[0][a_amount]" class="form-control form-control-sm aamount" readonly>
                         </td>
 
                         <td class="text-center">
@@ -114,7 +114,7 @@
 
                         <!-- Total Qty -->
                         <td>
-                            <input type="number" id="totalQty"
+                            <input type="number" id="totalQty" name="total_qty"
                                 class="form-control form-control-sm text-right" readonly>
                         </td>
 
@@ -122,7 +122,7 @@
 
                         <!-- Total Amount -->
                         <td>
-                            <input type="number" id="totalAmount"
+                            <input type="number" id="totalAmount" name="total_amount"
                                 class="form-control form-control-sm text-right" readonly>
                         </td>
 
@@ -130,7 +130,7 @@
 
                         <!-- Total A.Amount -->
                         <td>
-                            <input type="number" id="totalaAmount"
+                            <input type="number" id="totalaAmount" name="total_a_amount"
                                 class="form-control form-control-sm text-right" readonly>       
                         </td>
 
@@ -140,10 +140,10 @@
                         <td colspan="4"></td>
                         <td>CGST %</td>
                         <td>
-                            <input type="number" id="cgstPercent" class="form-control form-control-sm text-right">
+                            <input type="number" id="cgstPercent" name="cgst_percent" class="form-control form-control-sm text-right">
                         </td>
                          <td>
-                            <input type="number" id="cgstAmount" class="form-control form-control-sm text-right" readonly>
+                            <input type="number" id="cgstAmount" name="cgst_amount" class="form-control form-control-sm text-right" readonly>
                         </td>
                         <td colspan="3"></td>
                     </tr>
@@ -151,10 +151,10 @@
                         <td colspan="4"></td>
                         <td>SGST %</td>
                         <td>
-                            <input type="number" id="sgstPercent" class="form-control form-control-sm text-right">
+                            <input type="number" id="sgstPercent" name="sgst_percent" class="form-control form-control-sm text-right">
                         </td>
                          <td>
-                            <input type="number" id="sgstAmount" class="form-control form-control-sm text-right" readonly>
+                            <input type="number" id="sgstAmount" name="sgst_amount" class="form-control form-control-sm text-right" readonly>
                         </td>
                         <td colspan="3"></td>
                     </tr>
@@ -162,10 +162,10 @@
                         <td colspan="4"></td>
                         <td>IGST %</td>
                         <td>
-                            <input type="number" id="igstPercent" class="form-control form-control-sm text-right">
+                            <input type="number" id="igstPercent" name="igst_percent" class="form-control form-control-sm text-right">
                         </td>
                          <td>
-                            <input type="number" id="igstAmount" class="form-control form-control-sm text-right" readonly>
+                            <input type="number" id="igstAmount" name="igst_amount" class="form-control form-control-sm text-right" readonly>
                         </td>
                         <td colspan="3"></td>
                     </tr>
@@ -175,7 +175,7 @@
                         <td>
                         </td>
                         <td>
-                            <input type="number" id="freightAmount" class="form-control form-control-sm text-right">
+                            <input type="number" id="freightAmount" name="freight_amount" class="form-control form-control-sm text-right">
                         </td>
                         <td colspan="3"></td>
                     </tr>
@@ -184,7 +184,7 @@
                         <td>Discount</td>
                         <td>
                             <div class="d-flex">
-                                <select id="discountType" class="form-control form-control-sm mr-1" style="width:80px;">
+                                <select id="discountType" name="discount_type" class="form-control form-control-sm mr-1" style="width:80px;">
                                     <option value="fixed">₹</option>
                                     <option value="percent">%</option>
                                 </select>
@@ -193,22 +193,22 @@
                             </div>
                         </td>
                         <td>
-                            <input type="number" id="discountAmount" class="form-control form-control-sm text-right" readonly>
+                            <input type="number" id="discountAmount" name="discount_amount" class="form-control form-control-sm text-right" readonly>
                         </td>
                         <td colspan="3"></td>
                     </tr>
                     <tr class="bg-light font-weight-bold text-right">
                         <td colspan="6">Net Amount</td>
                         <td>
-                            <input type="number" id="netAmount" class="form-control form-control-sm text-right" readonly>
+                            <input type="number" id="netAmount" name="net_amount" class="form-control form-control-sm text-right" readonly>
                         </td>
                         <td></td>
                         <td>
                            <div class="d-flex align-items-center">
-                                <input type="checkbox" id="with_tax" class="mr-1" checked>
+                                <input type="checkbox" id="with_tax" name="with_tax" value="1" class="mr-1" checked>
                                 <label for="with_tax" class="mb-0 mr-2">Tax</label>
 
-                                <input type="number" id="netaAmount"
+                                <input type="number" id="netaAmount" name="net_a_amount"
                                     class="form-control form-control-sm text-right" readonly>
                             </div>
                         </td>

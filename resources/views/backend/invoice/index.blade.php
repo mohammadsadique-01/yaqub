@@ -144,15 +144,28 @@ $(function() {
     });
 
     // Add Row
+    let rowIndex = 1;
+
     $('#addRowBtn').on('click', function () {
+
         let newRow = $('#itemsTable tbody tr:first').clone();
 
-        newRow.find('input').val('');
-        // newRow.find('.qty').val();
-        // newRow.find('.price, .aprice').val();
-        newRow.find('.itemSelect').val('');
+        newRow.find('input, select').each(function () {
+
+            let name = $(this).attr('name');
+
+            if (name) {
+                let updatedName = name.replace(/\d+/, rowIndex);
+                $(this).attr('name', updatedName);
+            }
+
+            $(this).val('');
+        });
 
         $('#itemsTable tbody').append(newRow);
+
+        rowIndex++;
+
         updateSerialNumbers();
         calculateTotals();
     });
@@ -161,10 +174,32 @@ $(function() {
     $(document).on('click', '.removeRow', function () {
         if ($('#itemsTable tbody tr').length > 1) {
             $(this).closest('tr').remove();
-            updateSerialNumbers();
+            reindexRows();
             calculateTotals();
         }
     });
+
+    function reindexRows() {
+
+        rowIndex = 0;
+
+        $('#itemsTable tbody tr').each(function () {
+
+            $(this).find('input, select').each(function () {
+
+                let name = $(this).attr('name');
+
+                if (name) {
+                    let updatedName = name.replace(/\d+/, rowIndex);
+                    $(this).attr('name', updatedName);
+                }
+            });
+
+            rowIndex++;
+        });
+
+        updateSerialNumbers();
+    }
 
     // Auto calculation
     $(document).on('input', '.qty, .price, .aprice', function () {
@@ -299,6 +334,38 @@ $(function() {
 
         row.find('.hsn').val(hsn);
         row.find('.unit').val(unit);
+    });
+
+    $('#invoiceForm').on('submit', function(e) {
+
+        e.preventDefault();
+
+        $.ajax({
+            url: "{{ route('invoice.store') }}",
+            type: "POST",
+            data: $(this).serialize(),
+            success: function(response) {
+
+                if(response.status) {
+                    alert(response.message);
+
+                    // Option 1: reload page
+                    location.reload();
+
+                    // Option 2: redirect
+                    // window.location.href = "/invoices";
+                }
+            },
+            error: function(xhr) {
+
+                let errors = xhr.responseJSON.errors;
+
+                $.each(errors, function(key, value){
+                    alert(value[0]);
+                });
+            }
+        });
+
     });
 });
 
