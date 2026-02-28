@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('date');
             $table->foreignId('financial_year_id')->constrained()->cascadeOnDelete();
             $table->foreignId('debitor_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('debitor_site_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('debitor_site_id')->nullable()->constrained()->nullOnDelete();
 
             $table->decimal('total_qty', 10, 2)->default(0);
             $table->decimal('total_amount', 15, 2)->nullable()->default(0);

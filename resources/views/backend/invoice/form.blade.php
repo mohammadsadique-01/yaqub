@@ -3,7 +3,7 @@
     <div class="form-row">
         <div class="form-group col-md-3">
             <label>Invoice Number</label>
-            <input type="text" name="invoice_number" class="form-control" value="{{ $invoiceNumber  }}" readonly>
+            <input type="text" id="invoice_number" name="invoice_number" class="form-control" readonly>
         </div>
         <div class="form-group col-md-3">
             <label>Date</label>
@@ -20,8 +20,8 @@
         </div>
         {{-- Sites --}}
         <div class="form-group col-md-3">
-            <label>Site <span class="text-danger">*</span></label>
-            <select name="debitor_site_id" class="form-control select2bs4 siteSelect" required>
+            <label>Site</label>
+            <select name="debitor_site_id" class="form-control select2bs4 siteSelect">
                 <option value="">Select Site</option>
             </select>
         </div>

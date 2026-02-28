@@ -94,6 +94,7 @@ Route::middleware('auth')->group(function () {
     Route::group(['prefix' => 'invoice', 'as' => 'invoice.'], function () {
         Route::get('/', [InvoiceController::class, 'index'])->name('index');
         Route::post('/store', [InvoiceController::class, 'store'])->name('store');
+        Route::get('/get-invoice-number', [InvoiceController::class, 'generateInvoiceNumber'])->name('number');
     });
 
 });

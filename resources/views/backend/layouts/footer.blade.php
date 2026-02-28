@@ -81,6 +81,7 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script src="{{ asset('js/location-helper.js') }}"></script>
+<script src="{{ asset('js/alert.js') }}"></script>
 
 <script>
   $(function () {
@@ -106,9 +107,6 @@
     $('#checkInDate input').on('click', function() {
       $('#checkInDate').datetimepicker('toggle');
     });
-    setTimeout(() => {
-        $('.alert').alert('close');
-    }, 3000);
 
       $('#checkInDate').datetimepicker({
       format: 'YYYY-MM-DD', // Adjust the format as needed

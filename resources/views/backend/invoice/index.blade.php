@@ -60,7 +60,7 @@
 
     <div class="content">
         <div class="container-fluid">
-
+            <div id="alertContainer" class="mt-2"></div>
             @if(session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
@@ -109,6 +109,7 @@ $(function() {
     // Show form button
     $('#showFormBtn').on('click', function() {
         $('#invoiceForm')[0].reset();
+        loadInvoiceNumber();
         $('#filterCard, #tableSection').addClass('d-none');
         $('#formSection').removeClass('d-none').addClass('card card-outline card-primary');
         $('#form-errors').html('');
@@ -339,7 +340,9 @@ $(function() {
     $('#invoiceForm').on('submit', function(e) {
 
         e.preventDefault();
-
+        
+           
+        
         $.ajax({
             url: "{{ route('invoice.store') }}",
             type: "POST",
@@ -347,26 +350,61 @@ $(function() {
             success: function(response) {
 
                 if(response.status) {
-                    alert(response.message);
 
-                    // Option 1: reload page
-                    location.reload();
 
-                    // Option 2: redirect
-                    // window.location.href = "/invoices";
+                $('#invoiceForm')[0].reset();
+                $('.debitorSelect').val(null).trigger('change');
+
+                $('#formSection, #showTableBtn').addClass('d-none');
+                    $('#tableSection, #filterCard, #showFormBtn').removeClass('d-none');
+
+                      loadInvoiceNumber();
+
+                    showAlert('success', response.message);
+                    toastr.success( response.message);
+
+
                 }
             },
             error: function(xhr) {
+                if (xhr.status === 422) {
 
-                let errors = xhr.responseJSON.errors;
+                    let errors = xhr.responseJSON.errors;
+                    let errorHtml = '';
 
-                $.each(errors, function(key, value){
-                    alert(value[0]);
-                });
+                    $.each(errors, function (key, value) {
+                        errorHtml += `<div>${value[0]}</div>`;
+                    });
+
+                    showAlert('error', errorHtml);
+
+                    toastr.error(errorHtml);
+                } else {
+
+                    showAlert('error', 'Something went wrong!');
+                    toastr.error('Something went wrong!');
+
+                }
             }
         });
 
     });
+
+    function loadInvoiceNumber() {
+        $.ajax({
+            url: "{{ route('invoice.number') }}",
+            type: "GET",
+            success: function (response) {
+                $('#invoice_number').val(response);
+            },
+            error: function () {
+                toastr.error('Failed to generate invoice number');
+            }
+        });
+    }
+
+    loadInvoiceNumber();
+
 });
 
 </script>

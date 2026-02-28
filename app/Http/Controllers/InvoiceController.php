@@ -12,18 +12,15 @@ use Illuminate\View\View;
 
 class InvoiceController extends Controller
 {
-    public function index(): View
+    public static function generateInvoiceNumber()
     {
-        $debitors = Debitor::latest()->get();
-        $operators = Operator::latest()->get();
-        $items = Item::latest()->get();
-
+        $companyCode = 'AME';
         $financialYear = activeFinancialYear();
+        $start = date('y', strtotime($financialYear->start_date));
+        $end = date('y', strtotime($financialYear->end_date));
+        $yearFormat = $start.'-'.$end;
 
-        // Get last invoice of active financial year
-        $lastInvoice = Invoice::where('financial_year_id', $financialYear->id)
-            ->latest()
-            ->first();
+        $lastInvoice = Invoice::where('financial_year_id', $financialYear->id)->latest()->first();
 
         if ($lastInvoice) {
             $lastNumber = (int) substr($lastInvoice->invoice_number, -2);
@@ -32,15 +29,18 @@ class InvoiceController extends Controller
             $nextNumber = '01';
         }
 
-        $companyCode = 'AME';
+        $nextNumberFormatted = str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
 
-        $start = date('y', strtotime($financialYear->start_date));
-        $end = date('y', strtotime($financialYear->end_date));
-        $yearFormat = $start.'-'.$end;
+        return $companyCode.'/'.$yearFormat.'/'.$nextNumberFormatted;
+    }
 
-        $invoiceNumber = $companyCode.'/'.$yearFormat.'/'.$nextNumber;
+    public function index(): View
+    {
+        $debitors = Debitor::latest()->get();
+        $operators = Operator::latest()->get();
+        $items = Item::latest()->get();
 
-        return view('backend.invoice.index', compact(['debitors', 'operators', 'items', 'invoiceNumber']));
+        return view('backend.invoice.index', compact(['debitors', 'operators', 'items']));
     }
 
     public function store(Request $request)
