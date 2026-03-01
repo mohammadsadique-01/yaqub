@@ -164,16 +164,24 @@ class DrillingController extends Controller
         $query = DrillingReport::with(['debitor', 'site', 'operator'])
             ->where('financial_year_id', session('financial_year_id'));
 
+        // Store selected filters
+        $selectedDebitors = collect();
+        $selectedSites = collect();
+        $selectedOperators = collect();
+
         if (! empty($request->debitors)) {
             $query->whereIn('debitor_id', $request->debitors);
+            $selectedDebitors = Debitor::whereIn('id', $request->debitors)->pluck('account_name');
         }
 
         if (! empty($request->sites)) {
             $query->whereIn('debitor_site_id', $request->sites);
+            $selectedSites = DebitorSite::whereIn('id', $request->sites)->pluck('site_name');
         }
 
         if (! empty($request->operators)) {
             $query->whereIn('operator_id', $request->operators);
+            $selectedOperators = Operator::whereIn('id', $request->operators)->pluck('name');
         }
 
         if ($request->filled('from_date') || $request->filled('to_date')) {
@@ -185,7 +193,6 @@ class DrillingController extends Controller
 
         $reports = $query->orderBy('date')->get();
 
-        // totals
         $totals = [
             'holes' => indian_number($reports->sum('hole')),
             'meter' => indian_number($reports->sum('meter')),
@@ -197,7 +204,10 @@ class DrillingController extends Controller
         $pdf = Pdf::loadView('backend.drilling.pdf', compact(
             'reports',
             'totals',
-            'request'
+            'request',
+            'selectedDebitors',
+            'selectedSites',
+            'selectedOperators'
         ))->setPaper('A4', 'landscape');
 
         return $pdf->stream('drilling-report.pdf');
