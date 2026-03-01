@@ -1,5 +1,5 @@
 <div class="card-body">
-
+    <input type="hidden" id="invoice_id" name="invoice_id">
     <div class="form-row">
         <div class="form-group col-md-3">
             <label>Invoice Number</label>
@@ -10,9 +10,9 @@
             <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}">
         </div>
         <div class="form-group col-md-3">
-            <label>Debitor <span class="text-danger">*</span></label>
+            <label>Account <span class="text-danger">*</span></label>
             <select name="debitor_id" class="form-control select2bs4 debitorSelect" required>
-                <option value="">Select Debitor</option>
+                <option value="">Select Account</option>
                 @foreach($debitors as $debitor)
                     <option value="{{ $debitor->id }}">{{ $debitor->account_name }}</option>
                 @endforeach
@@ -140,7 +140,7 @@
                         <td colspan="4"></td>
                         <td>CGST %</td>
                         <td>
-                            <input type="number" id="cgstPercent" name="cgst_percent" class="form-control form-control-sm text-right">
+                            <input type="number" id="cgstPercent" name="cgst_percent" value="9" class="form-control form-control-sm text-right">
                         </td>
                          <td>
                             <input type="number" id="cgstAmount" name="cgst_amount" class="form-control form-control-sm text-right" readonly>
@@ -151,7 +151,7 @@
                         <td colspan="4"></td>
                         <td>SGST %</td>
                         <td>
-                            <input type="number" id="sgstPercent" name="sgst_percent" class="form-control form-control-sm text-right">
+                            <input type="number" id="sgstPercent" name="sgst_percent" value="9" class="form-control form-control-sm text-right">
                         </td>
                          <td>
                             <input type="number" id="sgstAmount" name="sgst_amount" class="form-control form-control-sm text-right" readonly>
@@ -162,7 +162,7 @@
                         <td colspan="4"></td>
                         <td>IGST %</td>
                         <td>
-                            <input type="number" id="igstPercent" name="igst_percent" class="form-control form-control-sm text-right">
+                            <input type="number" id="igstPercent" name="igst_percent" value="0" class="form-control form-control-sm text-right">
                         </td>
                          <td>
                             <input type="number" id="igstAmount" name="igst_amount" class="form-control form-control-sm text-right" readonly>

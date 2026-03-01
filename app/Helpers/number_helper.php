@@ -8,6 +8,28 @@ if (! function_exists('indian_number')) {
             return '0';
         }
 
-        return number_format((float) $number, $decimals, '.', ',');
+        $number = round($number, $decimals);
+
+        $decimalPart = '';
+        if ($decimals > 0) {
+            $decimalPart = '.'.str_pad(
+                substr(strrchr($number, '.'), 1) ?: '',
+                $decimals,
+                '0'
+            );
+        }
+
+        $integerPart = floor($number);
+
+        $lastThree = substr($integerPart, -3);
+        $restUnits = substr($integerPart, 0, -3);
+
+        if ($restUnits != '') {
+            $lastThree = ','.$lastThree;
+        }
+
+        $restUnits = preg_replace("/\B(?=(\d{2})+(?!\d))/", ',', $restUnits);
+
+        return $restUnits.$lastThree.$decimalPart;
     }
 }

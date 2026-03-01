@@ -30,8 +30,27 @@ class Invoice extends Model
         'remark',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($invoice) {
+            $invoice->items()->delete();
+        });
+    }
+
     public function items()
     {
         return $this->hasMany(InvoiceItem::class);
+    }
+
+    public function debitor()
+    {
+        return $this->belongsTo(Debitor::class, 'debitor_id');
+    }
+
+    public function debitorSite()
+    {
+        return $this->belongsTo(DebitorSite::class, 'debitor_site_id');
     }
 }

@@ -95,6 +95,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [InvoiceController::class, 'index'])->name('index');
         Route::post('/store', [InvoiceController::class, 'store'])->name('store');
         Route::get('/get-invoice-number', [InvoiceController::class, 'generateInvoiceNumber'])->name('number');
+        Route::get('/data', [InvoiceController::class, 'getData'])->name('data');
+        Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
+        Route::get('/{invoice}/edit', [InvoiceController::class, 'edit'])->name('edit');
+        Route::put('/{invoice}', [InvoiceController::class, 'update'])->name('update');
+        Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('show');
     });
 
 });

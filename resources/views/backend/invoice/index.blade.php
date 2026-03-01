@@ -88,7 +88,7 @@
                     <h3 class="card-title">Add Invoice</h3>
                 </div>
 
-                <form id="invoiceForm" action="{{ route('drilling.store') }}" method="POST">
+                <form id="invoiceForm" method="POST">
                     @csrf
                     @include('backend.invoice.form')
 
@@ -124,8 +124,8 @@ $(function() {
         $('#showFormBtn').removeClass('d-none');
         $(this).addClass('d-none');
 
-        if (drillingTable) {
-            drillingTable.columns.adjust();
+        if (dataTable) {
+            dataTable.columns.adjust();
         }
     });
 
@@ -340,30 +340,42 @@ $(function() {
     $('#invoiceForm').on('submit', function(e) {
 
         e.preventDefault();
-        
-           
+
+        let invoiceId = $('#invoice_id').val();
+        let url = "";
+        let method = "";
+
+        if(invoiceId) {
+            // UPDATE
+            url = "/invoice/" + invoiceId;
+            method = "PUT";
+        } else {
+            // STORE
+            url = "{{ route('invoice.store') }}";
+            method = "POST";
+        }
         
         $.ajax({
-            url: "{{ route('invoice.store') }}",
-            type: "POST",
+            url: url,
+            type: method,
             data: $(this).serialize(),
             success: function(response) {
 
                 if(response.status) {
+                    $('#invoiceForm')[0].reset();
+                    $('.debitorSelect').val(null).trigger('change');
 
-
-                $('#invoiceForm')[0].reset();
-                $('.debitorSelect').val(null).trigger('change');
-
-                $('#formSection, #showTableBtn').addClass('d-none');
+                    $('#formSection, #showTableBtn').addClass('d-none');
                     $('#tableSection, #filterCard, #showFormBtn').removeClass('d-none');
 
-                      loadInvoiceNumber();
+                    loadInvoiceNumber();
 
+                    if (dataTable) {
+                        dataTable.ajax.reload(null, false);
+                    }
+                    
                     showAlert('success', response.message);
                     toastr.success( response.message);
-
-
                 }
             },
             error: function(xhr) {
@@ -404,6 +416,146 @@ $(function() {
     }
 
     loadInvoiceNumber();
+
+     // ================= EDIT INVOICE =================
+    $(document).on('click', '.editBtn', function () {
+
+        let id = $(this).data('id');
+
+        // Show form same as Add button
+        $('#filterCard, #tableSection').addClass('d-none');
+        $('#formSection').removeClass('d-none').addClass('card card-outline card-primary');
+        $('#showFormBtn').addClass('d-none');
+        $('#showTableBtn').removeClass('d-none');
+        $('#form-errors').html('');
+
+        // Clear previous rows except first
+        $('#itemsTable tbody').html('');
+        rowIndex = 0;
+
+        // Get invoice data
+        $.ajax({
+            url: "/invoice/" + id + "/edit",
+            type: "GET",
+            success: function(response) {
+
+                let invoice = response.data;
+                let items   = invoice.items;
+
+                $('#invoiceForm').attr('action', '/invoice/' + invoice.id);
+
+                if ($('#invoiceForm input[name=_method]').length === 0) {
+                    $('#invoiceForm').append('<input type="hidden" name="_method" value="PUT">');
+                }
+
+                // ========= Fill Main Fields =========
+                $('#invoice_id').val(invoice.id);
+                $('#invoice_number').val(invoice.invoice_number);
+                $('input[name="date"]').val(invoice.date);
+                $('.debitorSelect').val(invoice.debitor_id).trigger('change');
+                $('.siteSelect').val(invoice.debitor_site_id);
+
+                $('#cgstPercent').val(invoice.cgst_percent);
+                $('#sgstPercent').val(invoice.sgst_percent);
+                $('#igstPercent').val(invoice.igst_percent);
+                $('#freightAmount').val(invoice.freight_amount);
+                $('#discountType').val(invoice.discount_type);
+                $('#discount').val(invoice.discount);
+                $('#discountAmount').val(invoice.discount_amount);
+
+                if(invoice.with_tax == 1){
+                    $('#with_tax').prop('checked', true);
+                } else {
+                    $('#with_tax').prop('checked', false);
+                }
+
+                // ========= CLEAR TABLE =========
+                $('#itemsTable tbody').empty();
+                rowIndex = 0;
+
+                // ========= LOOP ITEMS =========
+                items.forEach(function(item, index) {
+
+                    // 🔥 Create new row from ORIGINAL HTML structure
+                    let newRow = `
+                    <tr>
+                        <td class="text-center sn">${index + 1}</td>
+
+                        <td>
+                            <select name="items[${index}][item_id]" class="form-control form-control-sm itemSelect">
+                                {!! collect($items)->map(function($item){
+                                    return '<option value="'.$item->id.'" data-hsn="'.$item->hsn_sac.'" data-unit="'.$item->unit.'">'.$item->name.'</option>';
+                                })->implode('') !!}
+                            </select>
+                        </td>
+
+                        <td><input type="text" name="items[${index}][hsn_sac]" class="form-control form-control-sm hsn" readonly></td>
+                        <td><input type="text" name="items[${index}][unit]" class="form-control form-control-sm unit" readonly></td>
+                        <td><input type="number" name="items[${index}][qty]" class="form-control form-control-sm qty"></td>
+                        <td><input type="number" name="items[${index}][price]" class="form-control form-control-sm price"></td>
+                        <td><input type="number" name="items[${index}][amount]" class="form-control form-control-sm amount" readonly></td>
+                        <td><input type="number" name="items[${index}][a_price]" class="form-control form-control-sm aprice"></td>
+                        <td><input type="number" name="items[${index}][a_amount]" class="form-control form-control-sm aamount" readonly></td>
+
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm removeRow">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    `;
+
+                    $('#itemsTable tbody').append(newRow);
+
+                    let lastRow = $('#itemsTable tbody tr:last');
+
+                    lastRow.find('.itemSelect').val(item.item_id).trigger('change');
+                    lastRow.find('.hsn').val(item.hsn_sac);
+                    lastRow.find('.unit').val(item.unit);
+                    lastRow.find('.qty').val(item.qty);
+                    lastRow.find('.price').val(item.price);
+                    lastRow.find('.amount').val(item.amount);
+                    lastRow.find('.aprice').val(item.a_price);
+                    lastRow.find('.aamount').val(item.a_amount);
+
+                    rowIndex++;
+                });
+
+                calculateTotals();
+
+                
+            }
+        });
+
+    });
+
+ 
+$(document).on('click', '.viewInvoice', function () {
+
+    const url = $(this).data('url');
+
+    $('#modal-global .modal-dialog')
+        .removeClass('modal-sm modal-lg modal-xl')
+        .addClass('modal-lg');
+        
+    $('#modal-global').modal('show');
+    $('#modal-global .modal-content').html('Loading...');
+
+    $.get(url)
+        .done(function (html) {
+            $('#modal-global .modal-content').html(html);
+        })
+        .fail(function (xhr) {
+            console.log(xhr.responseText); // See real error
+            $('#modal-global .modal-content').html(
+                '<div class="modal-body text-danger">Something went wrong!</div>'
+            );
+        });
+
+});
+
+
+
 
 });
 
