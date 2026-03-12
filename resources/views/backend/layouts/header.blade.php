@@ -61,6 +61,7 @@
   <link rel="stylesheet" href="{{ asset('custom/css/choosen.css') }}">
   <link rel="stylesheet" href="{{ asset('custom/css/loader.css') }}">
   <link rel="stylesheet" href="{{ asset('custom/css/search.css') }}">
+  <link rel="stylesheet" href="{{ asset('custom/css/menu-icons.css') }}">
 
   <!-- CK Editor -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -92,7 +93,7 @@
 
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand
-    @if(!empty(Auth::user()) && Auth::user()->dark_mode == 1) navbar-dark @else navbar-light @endif">
+    @if(!empty(Auth::user()) && Auth::user()->dark_mode == 1) navbar-dark @else navbar-purple @endif">
 
     <!-- Left navbar links -->
     <ul class="navbar-nav">

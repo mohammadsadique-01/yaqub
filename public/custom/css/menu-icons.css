@@ -1,0 +1,93 @@
+/* MASTER */
+.master-link.active{
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+    box-shadow:0 0 10px rgba(0,114,255,.6);
+}
+
+/* DEBITOR */
+.debitor-link.active{
+    background:linear-gradient(90deg,#ff7e5f,#feb47b);
+    box-shadow:0 0 10px rgba(255,126,95,.6);
+}
+
+/* CREDITOR */
+.creditor-link.active{
+    background:linear-gradient(90deg,#43cea2,#185a9d);
+    box-shadow:0 0 10px rgba(67,206,162,.6);
+}
+
+/* ITEMS */
+.items-link.active{
+    background:linear-gradient(90deg,#f7971e,#ffd200);
+    box-shadow:0 0 10px rgba(255,210,0,.6);
+}
+
+/* OPERATOR */
+.operator-link.active{
+    background:linear-gradient(90deg,#7f00ff,#e100ff);
+    box-shadow:0 0 10px rgba(225,0,255,.6);
+}
+
+/* DRILLING */
+.drilling-link.active{
+    background:linear-gradient(90deg,#00b09b,#96c93d);
+    box-shadow:0 0 10px rgba(0,176,155,.6);
+}
+
+/* INVOICE */
+.invoice-link.active{
+    background:linear-gradient(90deg,#ff512f,#dd2476);
+    box-shadow:0 0 10px rgba(221,36,118,.6);
+}
+
+
+/* HEADER GRADIENT */
+.navbar-purple{
+    background: linear-gradient(135deg, #6a11cb, #2575fc) !important;
+    border-bottom: 0;
+}
+
+/* navbar text color */
+.navbar-purple .nav-link{
+    color:#fff !important;
+}
+
+/* icons */
+.navbar-purple .nav-link i{
+    color:#fff;
+}
+
+/* hover effect */
+.navbar-purple .nav-link:hover{
+    color:#e6e6e6 !important;
+}
+
+
+/* SIDEBAR GRADIENT */
+.main-sidebar.sidebar-dark-primary{
+    background: linear-gradient(180deg,#6a11cb,#2575fc) !important;
+}
+
+/* brand section */
+.main-sidebar .brand-link{
+    background: transparent;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* sidebar text */
+.main-sidebar .nav-link{
+    color:#eaeaea;
+}
+
+/* hover */
+.main-sidebar .nav-link:hover{
+    background: rgba(255,255,255,0.1);
+    color:#fff;
+}
+
+/* active menu */
+.main-sidebar .nav-link.active{
+    background: rgba(0,0,0,0.25);
+    color:#fff;
+    border-radius:6px;
+}

@@ -5,7 +5,7 @@
             <th>#</th>
             <th>Invoice</th>
             <th>Account</th>
-            <th>tax</th>
+            <th>tax ( CGST | SGST | IGST | Freight | Discount )</th>
             <th>Amount</th>
             <th>A. Amount</th>
             <th>Action</th>

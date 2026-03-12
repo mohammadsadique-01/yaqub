@@ -10,16 +10,17 @@ if (! function_exists('indian_number')) {
 
         $number = round($number, $decimals);
 
-        $decimalPart = '';
-        if ($decimals > 0) {
-            $decimalPart = '.'.str_pad(
-                substr(strrchr($number, '.'), 1) ?: '',
-                $decimals,
-                '0'
-            );
-        }
-
         $integerPart = floor($number);
+        $decimalPart = '';
+
+        if ($decimals > 0) {
+            $decimal = substr(strrchr($number, '.'), 1) ?: '';
+
+            // remove if .00
+            if ($decimal && intval($decimal) > 0) {
+                $decimalPart = '.'.str_pad($decimal, $decimals, '0');
+            }
+        }
 
         $lastThree = substr($integerPart, -3);
         $restUnits = substr($integerPart, 0, -3);

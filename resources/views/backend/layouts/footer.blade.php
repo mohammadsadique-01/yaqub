@@ -80,6 +80,7 @@
 <!-- DataTables JS -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
+<script src="{{ asset('js/common.js') }}"></script>
 <script src="{{ asset('js/location-helper.js') }}"></script>
 <script src="{{ asset('js/alert.js') }}"></script>
 

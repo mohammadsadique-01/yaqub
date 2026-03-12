@@ -132,78 +132,20 @@ class InvoiceController extends Controller
 
             ->addColumn('tax', function ($row) {
 
-                $formatPercent = function ($value) {
-                    return (float) $value;
-                };
-
-                $html = '<table class="table table-sm table-bordered mb-0 text-nowrap" style="font-size:12px;">';
-
-                // Base Amount
-                if ($row->total_amount > 0) {
-                    $html .= '<tr>
-                                <td><strong>Amount</strong></td>
-                                <td class="text-right">₹ '.indian_number($row->total_amount).'</td>
-                            </tr>';
-                }
-
-                // CGST
-                if ($row->cgst_percent > 0) {
-                    $html .= '<tr>
-                                <td>CGST ('.$formatPercent($row->cgst_percent).'%)</td>
-                                <td class="text-right">₹ '.indian_number($row->cgst_amount).'</td>
-                            </tr>';
-                }
-
-                // SGST
-                if ($row->sgst_percent > 0) {
-                    $html .= '<tr>
-                                <td>SGST ('.$formatPercent($row->sgst_percent).'%)</td>
-                                <td class="text-right">₹ '.indian_number($row->sgst_amount).'</td>
-                            </tr>';
-                }
-
-                // IGST
-                if ($row->igst_percent > 0) {
-                    $html .= '<tr>
-                                <td>IGST ('.$formatPercent($row->igst_percent).'%)</td>
-                                <td class="text-right">₹ '.indian_number($row->igst_amount).'</td>
-                            </tr>';
-                }
-
-                // Freight
-                if ($row->freight_amount > 0) {
-                    $html .= '<tr>
-                                <td>Freight</td>
-                                <td class="text-right">₹ '.indian_number($row->freight_amount).'</td>
-                            </tr>';
-                }
-
-                // Discount
-                if ($row->discount_amount > 0) {
-
-                    if ($row->discount_type === 'percentage') {
-                        $label = 'Discount ('.$formatPercent($row->discount_percent).'%)';
-                    } else {
-                        $label = 'Discount';
-                    }
-
-                    $html .= '<tr>
-                                <td>'.$label.'</td>
-                                <td class="text-right text-danger">- ₹ '.indian_number($row->discount_amount).'</td>
-                            </tr>';
-                }
-
-                $html .= '</table>';
-
-                return $html;
+                return indian_number($row->cgst_amount).' | '.
+                    indian_number($row->sgst_amount).' | '.
+                    indian_number($row->igst_percent).' | '.
+                    indian_number($row->freight_amount).' | '.
+                    indian_number($row->discount_amount).' = ₹ '.
+                    indian_number($row->total_amount);
             })
 
             ->addColumn('amount', function ($row) {
-                return indian_number($row->net_amount);
+                return '₹ '.indian_number($row->net_amount);
             })
 
             ->addColumn('a_amount', function ($row) {
-                return indian_number($row->net_a_amount);
+                return '₹ '.indian_number($row->net_a_amount);
             })
 
             ->addColumn('action', function ($row) {
@@ -250,21 +192,7 @@ class InvoiceController extends Controller
 
     public function update(Request $request, Invoice $invoice)
     {
-        $invoice->update([
-            'invoice_number' => $request->invoice_number, // keep same
-            'date' => $request->date,
-            'debitor_id' => $request->debitor_id,
-            'debitor_site_id' => $request->debitor_site_id,
-            'cgst_percent' => $request->cgst_percent,
-            'sgst_percent' => $request->sgst_percent,
-            'igst_percent' => $request->igst_percent,
-            'freight_amount' => $request->freight_amount,
-            'discount_type' => $request->discount_type,
-            'discount_amount' => $request->discount_amount,
-            'net_amount' => $request->net_amount,
-            'net_a_amount' => $request->net_a_amount,
-            'with_tax' => $request->with_tax ? 1 : 0,
-        ]);
+        $invoice->update($request->only($invoice->getFillable()));
 
         // Delete old items
         $invoice->items()->delete();
@@ -286,13 +214,6 @@ class InvoiceController extends Controller
     {
         $invoice->load(['items', 'debitor', 'debitorSite']);
 
-        logger($invoice);
-
         return view('backend.invoice.view', compact('invoice'));
-
-        return response()->json([
-            'status' => true,
-            'data' => $invoice,
-        ]);
     }
 }

@@ -48,7 +48,7 @@
                                     <input type="text"
                                         name="name"
                                         value="{{ old('name', $operator->name ?? '') }}"
-                                        class="form-control form-control-sm @error('name') is-invalid @enderror"
+                                        class="form-control form-control-lg @error('name') is-invalid @enderror"
                                         placeholder="Enter operator name">
                                     @error('name')
                                         <small class="text-danger">{{ $message }}</small>
@@ -61,7 +61,7 @@
                                     <input type="text"
                                         name="phone"
                                         value="{{ old('phone', $operator->phone ?? '') }}"
-                                        class="form-control form-control-sm @error('phone') is-invalid @enderror"
+                                        class="form-control form-control-lg @error('phone') is-invalid @enderror"
                                         placeholder="Enter phone number">
                                     @error('phone')
                                         <small class="text-danger">{{ $message }}</small>
@@ -73,7 +73,7 @@
                                     <label class="small text-muted">Address</label>
                                     <textarea name="address"
                                             rows="2"
-                                            class="form-control form-control-sm"
+                                            class="form-control form-control-lg"
                                             placeholder="Enter address">{{ old('address', $operator->address ?? '') }}</textarea>
                                 </div>
 
@@ -82,22 +82,17 @@
                                     <label class="small text-muted">Remark</label>
                                     <textarea name="remark"
                                             rows="2"
-                                            class="form-control form-control-sm"
+                                            class="form-control form-control-lg"
                                             placeholder="Any remark...">{{ old('remark', $operator->remark ?? '') }}</textarea>
                                 </div>
 
                             </div>
 
                             <div class="card-footer text-right py-2">
-                                <button type="reset" class="btn btn-secondary btn-sm">
-                                    <i class="fas fa-undo"></i> Reset
-                                </button>
-
                                 <button type="submit" class="btn btn-primary btn-sm">
                                     <i class="fas fa-save"></i>
                                     {{ isset($operator) ? 'Update Operator' : 'Save Operator' }}
                                 </button>
-
                             </div>
                         </form>
                     </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CreditorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DebitorController;
 use App\Http\Controllers\DebitorSiteController;
@@ -47,18 +48,26 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/financial-year/{id}/switch', [AuthController::class, 'financialyearswitch'])->name('financial-year.switch');
 
-    Route::group(['prefix' => 'master/debitors', 'as' => 'debitor.'], function () {
+    Route::group(['prefix' => 'master'], function () {
 
-        Route::get('/', [DebitorController::class, 'index'])->name('index');
-        Route::post('/', [DebitorController::class, 'store'])->name('store');
-        Route::get('/data', [DebitorController::class, 'getData'])->name('data');
-        Route::get('/{debitor}/edit', [DebitorController::class, 'edit'])->name('edit');
-        Route::put('/{debitor}', [DebitorController::class, 'update'])->name('update');
-        Route::delete('/{debitor}', [DebitorController::class, 'destroy'])->name('destroy');
-        Route::get('/{debitor}', [DebitorController::class, 'show'])->name('show');
+        Route::group(['prefix' => '/debitors', 'as' => 'debitor.'], function () {
+            Route::get('/', [DebitorController::class, 'index'])->name('index');
+            Route::post('/', [DebitorController::class, 'store'])->name('store');
+            Route::get('/data', [DebitorController::class, 'getData'])->name('data');
+            Route::get('/{debitor}/edit', [DebitorController::class, 'edit'])->name('edit');
+            Route::put('/{debitor}', [DebitorController::class, 'update'])->name('update');
+            Route::delete('/{debitor}', [DebitorController::class, 'destroy'])->name('destroy');
+            Route::get('/{debitor}', [DebitorController::class, 'show'])->name('show');
 
-        Route::get('/{debitor}/sites', [DebitorController::class, 'getSites'])->name('sites');
+            Route::get('/{debitor}/sites', [DebitorController::class, 'getSites'])->name('sites');
+        });
 
+        Route::resource('operators', OperatorController::class)->except(['show', 'create']);
+
+    });
+
+    Route::group(['prefix' => 'master/creditor', 'as' => 'creditor.'], function () {
+        Route::resource('', CreditorController::class);
     });
 
     Route::group(['prefix' => 'master'], function () {
@@ -72,7 +81,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/villages/list', [LocationController::class, 'villages'])->name('villages.list');
 
-    Route::resource('operators', OperatorController::class)->except(['show', 'create']);
     Route::prefix('operators')->name('operators.')->group(function () {
         Route::get('payment', [OperatorController::class, 'payment'])->name('payment');
     });
