@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('operators', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone');
+            $table->text('phone')->nullable();
             $table->text('address')->nullable();
             $table->text('remark')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

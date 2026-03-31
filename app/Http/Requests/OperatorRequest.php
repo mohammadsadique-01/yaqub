@@ -26,6 +26,17 @@ class OperatorRequest extends FormRequest
             'phone' => 'required|string|max:20',
             'address' => 'nullable|string',
             'remark' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'image.uploaded' => 'Image upload failed. The file may be too large or the server rejected it.',
+            'image.max' => 'Image size must be less than 2MB.',
+            'image.image' => 'Please upload a valid image file.',
+            'image.mimes' => 'Only JPG, JPEG, PNG or WEBP images are allowed.',
         ];
     }
 }

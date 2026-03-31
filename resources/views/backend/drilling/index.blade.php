@@ -203,7 +203,9 @@ $(function() {
         if (!debitorId) return;
 
         // Example AJAX for sites
-        $.get('/master/debitors/' + debitorId + '/sites', function(data) {
+        let url = window.APP.routes.debitorSites.replace(':id', debitorId);
+
+        $.get(url, function (data) {
             $('.siteSelect').html('<option value="">Select Site</option>');
             data.forEach(site => {
                 $('.siteSelect').append('<option value="'+site.id+'">'+site.site_name+'</option>');
@@ -364,7 +366,9 @@ $(function() {
             $('select[name="operator_id"]').val(data.operator_id).trigger('change').prop('disabled', true);
 
             // load sites & lock
-            $.get('/master/debitors/' + data.debitor_id + '/sites', function (sites) {
+            let url = window.APP.routes.debitorSites.replace(':id', data.debitor_id);
+
+            $.get(url, function (sites) {
                 let siteSelect = $('.siteSelect');
                 siteSelect.html('');
                 sites.forEach(site => {

@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreDebitorRequest extends FormRequest
 {
@@ -25,7 +24,7 @@ class StoreDebitorRequest extends FormRequest
         return [
             // REQUIRED
             'account_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => 'nullable|string',
 
             // OPTIONAL
             'gst_number' => 'nullable|string|max:20',
@@ -41,15 +40,7 @@ class StoreDebitorRequest extends FormRequest
 
             // VILLAGE
             'village_id' => 'nullable|exists:villages,id',
-            'village_name' => [
-                'nullable',
-                'string',
-                'max:255',
-                Rule::requiredIf(! $this->filled('village_id')),
-                Rule::unique('villages')->where(function ($query) {
-                    return $query->where('location_id', $this->location_id);
-                }),
-            ],
+            'village_name' => 'nullable',
 
             'lease_area' => 'nullable|string|max:100',
             'lease_period' => 'nullable|string|max:100',
@@ -64,15 +55,6 @@ class StoreDebitorRequest extends FormRequest
     {
         return [
             'account_name.required' => 'Account name is required.',
-            'phone.required' => 'Phone number is required.',
-
-            'village_name.required' => 'Please enter village name.',
-            'village_name.unique' => 'This village already exists for the selected location.',
-
-            'location_id.exists' => 'Selected location is invalid.',
-            'village_id.exists' => 'Selected village is invalid.',
-
-            'site_name.*.required' => 'Site name cannot be empty',
         ];
     }
 }

@@ -58,23 +58,26 @@ Route::middleware('auth')->group(function () {
             Route::put('/{debitor}', [DebitorController::class, 'update'])->name('update');
             Route::delete('/{debitor}', [DebitorController::class, 'destroy'])->name('destroy');
             Route::get('/{debitor}', [DebitorController::class, 'show'])->name('show');
-
             Route::get('/{debitor}/sites', [DebitorController::class, 'getSites'])->name('sites');
+            Route::delete('/debitor-sites/{debitorSite}', [DebitorSiteController::class, 'destroy'])->name('debitor-sites.destroy');
+
+        });
+
+        Route::group(['prefix' => '/creditors', 'as' => 'creditor.'], function () {
+            Route::get('/', [CreditorController::class, 'index'])->name('index');
+            Route::post('/', [CreditorController::class, 'store'])->name('store');
+            Route::get('/data', [CreditorController::class, 'getData'])->name('data');
+            Route::get('/{creditor}/edit', [CreditorController::class, 'edit'])->name('edit');
+            Route::put('/{creditor}', [CreditorController::class, 'update'])->name('update');
+            Route::delete('/{creditor}', [CreditorController::class, 'destroy'])->name('destroy');
+            Route::get('/{creditor}', [CreditorController::class, 'show'])->name('show');
+            Route::get('/{creditor}/sites', [CreditorController::class, 'getSites'])->name('sites');
         });
 
         Route::resource('operators', OperatorController::class)->except(['show', 'create']);
-
-    });
-
-    Route::group(['prefix' => 'master/creditor', 'as' => 'creditor.'], function () {
-        Route::resource('', CreditorController::class);
-    });
-
-    Route::group(['prefix' => 'master'], function () {
         Route::resource('items', ItemController::class);
+        Route::resource('locations', LocationController::class);
     });
-
-    Route::delete('/debitor-sites/{debitorSite}', [DebitorSiteController::class, 'destroy'])->name('debitor-sites.destroy');
 
     Route::get('/locations/list', [LocationController::class, 'list'])->name('locations.list');
     Route::delete('/locations/{location}', [LocationController::class, 'destroy'])->name('locations.destroy');

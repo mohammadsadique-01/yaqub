@@ -10,6 +10,8 @@
   </div>
 </footer>
 
+@include('backend.layouts.routes')
+
 <!-- Control Sidebar -->
 <aside class="control-sidebar control-sidebar-dark">
   <!-- Control sidebar content goes here -->
@@ -30,7 +32,6 @@
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
-
 <!-- Bootstrap 4 -->
 <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- Select2 -->
@@ -70,7 +71,6 @@
 <script src="{{ asset('adminlte/plugins/jquery-validation/additional-methods.min.js') }}"></script>
 <!-- Custom JS -->
 <script src="{{ asset('custom/js/form-validation.js') }}"></script>
-<script src="{{ asset('custom/js/common.js') }}"></script>
 
 <!-- External CDN JS -->
 <script src="https://code.highcharts.com/highcharts.js"></script>

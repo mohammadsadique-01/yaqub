@@ -33,6 +33,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
+                                    <a href="{{ route('locations.index') }}" 
+                                    class="nav-link debitor-link {{ (Request::segment(2) == 'locations') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-map"></i>
+                                        <p>Location</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="{{ route('debitor.index') }}" 
                                     class="nav-link debitor-link {{ (Request::segment(2) == 'debitors') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-user-minus"></i>
@@ -41,7 +48,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('creditor.index') }}" 
-                                    class="nav-link creditor-link {{ (Request::segment(2) == 'creditor') ? 'active' : '' }}">
+                                    class="nav-link creditor-link {{ (Request::segment(2) == 'creditors') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-user-plus"></i>
                                         <p>Creditor List</p>
                                     </a>

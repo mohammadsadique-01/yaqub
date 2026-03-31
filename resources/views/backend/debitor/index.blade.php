@@ -1,7 +1,14 @@
 @extends('backend.layouts.admin')
 
 @section('title', 'Debitor')
-
+@push('styles')
+<style>
+.nav-pills .nav-link.tab-error {
+    background-color: #dc3545 !important;
+    color: #fff !important;
+}
+</style>
+@endpush
 @section('content')
 
     <div class="content-header">
@@ -52,7 +59,7 @@
             <div id="formSection" class="d-none">
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Add Debitor</h3>
+                        <h3 class="card-title" id="formTitle">Add Debitor</h3>
                     </div>
 
                     <form id="debitorForm" action="{{ route('debitor.store') }}" method="POST">
@@ -114,9 +121,11 @@
         
         if (!confirm('Delete this site?')) return;
 
+        let url = "{{ route('debitor.debitor-sites.destroy', ':id') }}";
+        url = url.replace(':id', siteId);
 
         $.ajax({
-            url: '/debitor-sites/' + siteId,
+            url: url,
             type: 'DELETE',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content')
@@ -173,6 +182,7 @@
             $('#tableSection').addClass('d-none');
             $('#formSection').removeClass('d-none');
             $('#form-errors').html('');
+            $('#formTitle').text('Add Debitor');
             loadLocations(); // 🔥 reload locations
 
             $('#debitorForm')[0].reset();
@@ -241,26 +251,68 @@
                     }
                 },
                 error: function (xhr) {
+                    // let tabPane = field.closest('.tab-pane').attr('id');
+                    // highlightTab(tabPane);
+
                     let errorHtml = `
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
                     `;
 
-                    // ✅ Validation errors (422)
+                    // 🔥 remove old errors
+                    $('.is-invalid').removeClass('is-invalid');
+                    $('.invalid-feedback').remove();
+
+                    // ✅ VALIDATION (422)
                     if (xhr.status === 422 && xhr.responseJSON.errors) {
+
+                        let firstField = null;
+
                         errorHtml += '<ul>';
+
                         $.each(xhr.responseJSON.errors, function (key, value) {
+
                             errorHtml += `<li>${value[0]}</li>`;
+
+                            let field = $(`[name="${key}"]`);
+
+                            // 🔥 highlight field
+                            field.addClass('is-invalid');
+
+                            // 🔥 show inline error
+                            field.after(`<div class="invalid-feedback">${value[0]}</div>`);
+
+                            // store first field
+                            if (!firstField) {
+                                firstField = field;
+                            }
                         });
+
                         errorHtml += '</ul>';
-                    }
-                    // ✅ DB / Server errors (500)
+
+                        // 🔥 AUTO SWITCH TAB
+                        if (firstField) {
+                            let tabPane = firstField.closest('.tab-pane').attr('id');
+
+                            if (tabPane) {
+                                $(`.nav-pills a[href="#${tabPane}"]`).tab('show');
+                            }
+
+                            // 🔥 focus
+                            firstField.focus();
+                        }
+
+                        toastr.error('Please fix the errors');
+
+                    } 
+                    // SERVER ERROR
                     else if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorHtml += `<p>${xhr.responseJSON.message}</p>`;
-                    }
-                    // ✅ Fallback
+                        toastr.error(xhr.responseJSON.message);
+                    } 
                     else {
-                        errorHtml += `<p>Something went wrong. Please try again.</p>`;
+                        errorHtml += `<p>Something went wrong</p>`;
+                        toastr.error('Something went wrong');
                     }
 
                     errorHtml += '</div>';
@@ -276,8 +328,10 @@
 
             const id = $(this).data('id');
             const url = "{{ route('debitor.edit', ':id') }}".replace(':id', id);
+            $('#debitorTabs a[href="#basic"]').tab('show');
 
             $.get(url, function (res) {
+                $('#formTitle').text('Edit Debitor');
                 // 1️⃣ Show form
                 $('#tableSection').addClass('d-none');
                 $('#formSection').removeClass('d-none');
@@ -323,7 +377,8 @@
                 $('#state_code').val(res.state_code);
 
                 // 7️⃣ Change form action to UPDATE
-                $('#debitorForm').attr('action', `/master/debitors/${id}`);
+                let url = window.APP.routes.debitorUpdate.replace(':id', id);
+                $('#debitorForm').attr('action', url);
                 if($('#debitorForm input[name="_method"]').length === 0) {
                     $('#debitorForm').append('<input type="hidden" name="_method" value="PUT">');
                 }
@@ -394,6 +449,66 @@
         });
 
     });
+
+    $(document).on('click', '.prev-tab', function () {
+        let currentTab = $('.tab-pane.active');
+
+        currentTab.find('.is-invalid').removeClass('is-invalid');
+
+        $('.nav-pills .active').parent().prev().find('a').click();
+    });
+
+    $(document).on('click', '.next-tab', function () {
+
+        let currentTab = $('.tab-pane.active');
+
+        // remove old errors
+        currentTab.find('.is-invalid').removeClass('is-invalid');
+        currentTab.find('.invalid-feedback').remove();
+
+        let hasError = false;
+
+        // 🔥 ONLY REQUIRED FIELD (account_name)
+        let accountInput = currentTab.find('[name="account_name"]');
+
+        if (accountInput.length && accountInput.val().trim() === '') {
+
+            accountInput.addClass('is-invalid');
+            accountInput.after('<div class="invalid-feedback">Account name is required</div>');
+
+            highlightTab(currentTab.attr('id'));
+
+            accountInput.focus();
+            hasError = true;
+
+            toastr.error('Account name is required');
+        }
+
+        if (hasError) return;
+
+        // ✅ go to next tab
+        $('.nav-pills .active').parent().next().find('a').click();
+    });
+
+
+    function highlightTab(tabId) {
+        $('.nav-pills .nav-link').removeClass('tab-error');
+
+        $(`.nav-pills a[href="#${tabId}"]`).addClass('tab-error');
+    }
+
+    $(document).on('input', '[name="account_name"]', function () {
+
+        if ($(this).val().trim() !== '') {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+
+            $('.nav-pills a[href="#basic"]').removeClass('tab-error');
+        }
+    });
+
+    $('#formTitle').text('Add Debitor');
+
 
 </script>
 @endpush

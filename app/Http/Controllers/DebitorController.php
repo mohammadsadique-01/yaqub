@@ -23,17 +23,25 @@ class DebitorController extends Controller
 
     public function store(StoreDebitorRequest $request)
     {
-        DB::transaction(function () use ($request, &$debitor) {
+        $debitor = DB::transaction(function () use ($request) {
 
             $locationId = null;
+
             if ($request->filled('location_id')) {
                 $locationId = $request->location_id;
+
             } elseif ($request->filled('state') && $request->filled('district')) {
-                $location = Location::create([
-                    'state' => $request->state,
-                    'district' => $request->district,
-                    'state_code' => $request->state_code,
-                ]);
+
+                $location = Location::firstOrCreate(
+                    [
+                        'state' => $request->state,
+                        'district' => $request->district,
+                    ],
+                    [
+                        'state_code' => $request->state_code,
+                    ]
+                );
+
                 $locationId = $location->id;
             }
 
@@ -41,11 +49,14 @@ class DebitorController extends Controller
 
             if ($request->filled('village_id')) {
                 $villageId = $request->village_id;
-            } elseif ($request->filled('village_name')) {
+
+            } elseif ($request->filled('village_name') && $locationId) {
+
                 $village = Village::create([
                     'location_id' => $locationId,
                     'village_name' => $request->village_name,
                 ]);
+
                 $villageId = $village->id;
             }
 
@@ -64,24 +75,28 @@ class DebitorController extends Controller
             ]);
 
             if (is_array($request->site_name)) {
-                foreach ($request->site_name as $site) {
-                    if (! empty($site)) {
+                collect($request->site_name)
+                    ->filter()
+                    ->each(function ($site) use ($debitor) {
                         DebitorSite::create([
                             'debitor_id' => $debitor->id,
                             'site_name' => $site,
                         ]);
-                    }
-                }
+                    });
             }
 
+            return $debitor;
         });
 
-        if (request()->ajax()) {
-            return response()->json(['success' => 'Debitor saved successfully']);
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => 'Debitor saved successfully',
+            ]);
         }
 
-        return redirect()->route('debitors.index')->with('success', 'Debitor saved successfully');
-
+        return redirect()
+            ->route('debitors.index')
+            ->with('success', 'Debitor saved successfully');
     }
 
     public function getData(Request $request)
@@ -156,39 +171,53 @@ class DebitorController extends Controller
     {
         DB::transaction(function () use ($request, $debitor) {
 
-            // Handle location
+            // =========================
+            // LOCATION HANDLING
+            // =========================
             $locationId = $debitor->location_id;
 
             if ($request->filled('location_id')) {
-                $location = Location::findOrFail($request->location_id);
 
-                $location->update([
-                    'state' => $request->state,
-                    'district' => $request->district,
-                    'state_code' => $request->state_code,
-                ]);
+                // Use existing location (DO NOT update shared record)
+                $locationId = $request->location_id;
 
-                $locationId = $location->id;
             } elseif ($request->filled('state') && $request->filled('district')) {
-                $location = Location::create([
-                    'state' => $request->state,
-                    'district' => $request->district,
-                    'state_code' => $request->state_code,
-                ]);
+
+                $location = Location::firstOrCreate(
+                    [
+                        'state' => $request->state,
+                        'district' => $request->district,
+                    ],
+                    [
+                        'state_code' => $request->state_code,
+                    ]
+                );
+
                 $locationId = $location->id;
             }
 
+            // =========================
+            // VILLAGE HANDLING
+            // =========================
+            $villageId = $debitor->village_id;
+
             if ($request->filled('village_id')) {
+
                 $villageId = $request->village_id;
-            } elseif ($request->filled('village_name')) {
+
+            } elseif ($request->filled('village_name') && $locationId) {
+
                 $village = Village::create([
                     'location_id' => $locationId,
                     'village_name' => $request->village_name,
                 ]);
+
                 $villageId = $village->id;
             }
 
-            // Update debitor
+            // =========================
+            // UPDATE DEBITOR
+            // =========================
             $debitor->update([
                 'account_name' => $request->account_name,
                 'phone' => $request->phone,
@@ -202,23 +231,28 @@ class DebitorController extends Controller
                 'remark' => $request->remark,
             ]);
 
+            // =========================
+            // SITES SYNC
+            // =========================
             $existingSites = DebitorSite::where('debitor_id', $debitor->id)
                 ->get()
                 ->keyBy('site_name');
 
-            $requestSites = collect($request->site_name)->filter()->values();
+            $requestSites = collect($request->site_name ?? [])
+                ->filter()
+                ->values();
 
-            /* ➕ ADD NEW SITES */
-            foreach ($requestSites as $siteName) {
+            // ➕ ADD NEW
+            $requestSites->each(function ($siteName) use ($existingSites, $debitor) {
                 if (! $existingSites->has($siteName)) {
                     DebitorSite::create([
                         'debitor_id' => $debitor->id,
                         'site_name' => $siteName,
                     ]);
                 }
-            }
+            });
 
-            /* ➖ REMOVE SITES (ONLY IF NOT USED) */
+            // ➖ REMOVE (if not used)
             foreach ($existingSites as $site) {
 
                 if (! $requestSites->contains($site->site_name)) {
@@ -228,12 +262,12 @@ class DebitorController extends Controller
                     if (! $used) {
                         $site->delete();
                     }
-                    // else: site is used → DO NOTHING (keep it)
+                    // if used → keep it
                 }
             }
         });
 
-        return request()->ajax()
+        return $request->ajax()
             ? response()->json(['success' => 'Debitor updated successfully'])
             : redirect()->route('debitors.index')->with('success', 'Debitor updated successfully');
     }

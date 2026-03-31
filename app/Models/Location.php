@@ -12,4 +12,9 @@ class Location extends Model
     {
         return $this->hasMany(Debitor::class);
     }
+
+    public function villages()
+    {
+        return $this->hasMany(Village::class);
+    }
 }

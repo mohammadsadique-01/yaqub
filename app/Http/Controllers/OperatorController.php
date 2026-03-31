@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OperatorRequest;
 use App\Models\Operator;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class OperatorController extends Controller
@@ -18,7 +19,19 @@ class OperatorController extends Controller
 
     public function store(OperatorRequest $request): RedirectResponse
     {
-        Operator::create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+
+            $image = $request->file('image');
+            $name = time().'.'.$image->getClientOriginalExtension();
+
+            $image->storeAs('operators', $name, 'public');
+
+            $data['image'] = $name;
+        }
+
+        Operator::create($data);
 
         return redirect()->route('operators.index')->with('success', 'Operator added successfully');
     }
@@ -32,7 +45,24 @@ class OperatorController extends Controller
 
     public function update(OperatorRequest $request, Operator $operator): RedirectResponse
     {
-        $operator->update($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+
+            if ($operator->image) {
+                Storage::disk('public')->delete('operators/'.$operator->image);
+            }
+
+            $image = $request->file('image');
+
+            $name = time().'.'.$image->getClientOriginalExtension();
+
+            $image->storeAs('operators', $name, 'public');
+
+            $data['image'] = $name;
+        }
+
+        $operator->update($data);
 
         return redirect()->route('operators.index')->with('success', 'Operator updated successfully');
     }

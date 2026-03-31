@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('debitors', function (Blueprint $table) {
             $table->id();
             $table->string('account_name');
-            $table->text('actual_address');
+            $table->text('actual_address')->nullable();
             $table->text('billing_address')->nullable();
             $table->foreignId('location_id')->nullable()->constrained('locations')->nullOnDelete();
             $table->foreignId('village_id')->nullable()->constrained('villages')->nullOnDelete();

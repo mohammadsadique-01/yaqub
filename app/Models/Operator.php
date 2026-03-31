@@ -11,6 +11,7 @@ class Operator extends Model
         'phone',
         'address',
         'remark',
+        'image',
     ];
 
     public function drillingReports()
